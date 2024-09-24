@@ -21,9 +21,21 @@
     <ClCompile Include="renengine_display.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="renengine_controls.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="renengine_engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renengine_display.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="renengine_engine.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="renengine_controls.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

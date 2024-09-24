@@ -134,10 +134,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="renengine_controls.cpp" />
     <ClCompile Include="renengine_display.cpp" />
+    <ClCompile Include="renengine_engine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="renengine_controls.hpp" />
     <ClInclude Include="renengine_display.hpp" />
+    <ClInclude Include="renengine_engine.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

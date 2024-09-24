@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "renengine_display.hpp"
+#include "renengine_engine.hpp"
 
 int main(int argc, char* argv[]) {
-	ReneNgine::Display display;
-	
-	system("pause");
+	ReneNgine::Engine engine;
+
+	engine.StartGameLoop();
 
 	return 0;
 }

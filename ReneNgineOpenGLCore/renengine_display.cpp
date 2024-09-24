@@ -19,7 +19,11 @@ namespace ReneNgine {
 
 		SDL_GetCurrentDisplayMode(0, &display_mode);
 		// Create the window
-		window = SDL_CreateWindow("ReneNgine", 0, 0, display_mode.w / 2, display_mode.h / 2, SDL_WINDOW_BORDERLESS);
+		window = SDL_CreateWindow("ReneNgine", 
+			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+			display_mode.w / 2, display_mode.h / 2, 
+			SDL_WINDOW_BORDERLESS | SDL_WINDOW_OPENGL);
+
 
 		if (!window) {
 			std::cerr << "Failed to initialize window: " << SDL_GetError() << std::endl;
