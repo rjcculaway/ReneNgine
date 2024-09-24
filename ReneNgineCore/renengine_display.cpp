@@ -13,7 +13,7 @@ namespace ReneNgine {
 
 	bool Display::setup() {
 		if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-			std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
+			SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL: %s\n", SDL_GetError());
 			return false;
 		}
 
@@ -26,7 +26,7 @@ namespace ReneNgine {
 
 
 		if (!window) {
-			std::cerr << "Failed to initialize window: " << SDL_GetError() << std::endl;
+			SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize window: %s\n", SDL_GetError());
 			return false;
 		}
 
@@ -34,7 +34,7 @@ namespace ReneNgine {
 		surface = SDL_GetWindowSurface(window);
 
 		if (!surface) {
-			std::cerr << "Failed to get window surface: " << SDL_GetError() << std::endl;
+			SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Failed to get window surface: %s\n", SDL_GetError());
 		}
 		return true;
 	}

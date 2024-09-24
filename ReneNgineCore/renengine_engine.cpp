@@ -11,6 +11,7 @@ namespace ReneNgine {
 			// Update game state
 
 			// Render
+			renderer.render();
 
 		}
 	}

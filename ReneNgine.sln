@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReneNgineVulkanCore", "ReneNgineVulkanCore\ReneNgineVulkanCore.vcxproj", "{9D5AF29F-F8DE-4FDC-A1DE-8BEB257FE3C9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReneNgineOpenGLCore", "ReneNgineOpenGLCore\ReneNgineOpenGLCore.vcxproj", "{67CF28AF-D6DC-471B-B517-11FB6C0CD2AE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReneNgineCore", "ReneNgineCore\ReneNgineCore.vcxproj", "{67CF28AF-D6DC-471B-B517-11FB6C0CD2AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
