@@ -38,16 +38,16 @@ namespace ReneNgine {
 		glEnable(GL_DEPTH_TEST);	// Depth test to avoid overdraw
 		glDisable(GL_STENCIL_TEST);
 
-		glViewport(0, 0, display_mode.w, display_mode.h);
+		//glViewport(0, 0, display_mode.w, display_mode.h);
 
 		// Setup buffers
-		CreateVertexBuffer();
+		CreateVertexArray();
 
 		// Compile shaders
-		CompileShaders();
+		shader_program_handle = CompileShaders();
 	}
 	RendererOpenGL::~RendererOpenGL() {
-		DestroyVertexBuffer();
+		Cleanup();
 		SDL_GL_DeleteContext(context);
 	}
 
@@ -65,22 +65,44 @@ namespace ReneNgine {
 		SDL_GL_SetSwapInterval(-1);
 	}
 
-	void RendererOpenGL::CreateVertexBuffer() {
+	void RendererOpenGL::CreateVertexArray() {
+		glm::vec3 vertices[9] = {
+			{-0.5f, -0.5f, 0.0f}, // left  
+			 {0.0f,  0.5f, 0.0f}, // top   
+			 {0.5f, -0.5f, 0.0f}, // right 
+		};
+		glGenVertexArrays(1, &vertex_array_object_handle);
 		glGenBuffers(1, &vertex_buffer_object_handle);								// Create a handle for the vertex buffer object
+
+		glBindVertexArray(vertex_array_object_handle);
+		
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_handle);					// Tells OpenGL that the handle is for vertex positions
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 9, vertices, GL_STATIC_DRAW);	// Actually load the data. GL_STATIC_DRAW signals intent that the buffer will be populated ONCE, and drawn multiple times
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 3, vertices, GL_STATIC_DRAW);	// Actually load the data. GL_STATIC_DRAW signals intent that the buffer will be populated ONCE, and drawn multiple times
+		glVertexAttribPointer(
+			0,			// Starting index
+			3,			// How many elements does one vertex have
+			GL_FLOAT,	// Data type
+			GL_FALSE,
+			3 * sizeof(float),
+			(void*) nullptr);
+		glEnableVertexAttribArray(0);	// Index 0 pertains to the vertex position, so we enable that index
+		
+		glBindBuffer(GL_ARRAY_BUFFER, 0);	// Unbind array buffer
+		glBindVertexArray(0);
 	}
 
-	void RendererOpenGL::DestroyVertexBuffer() {
+	void RendererOpenGL::Cleanup() {
+		glDeleteVertexArrays(1, &vertex_array_object_handle);
 		glDeleteBuffers(1, &vertex_buffer_object_handle);
+		glDeleteProgram(shader_program_handle);
 	}
 	
-	void RendererOpenGL::CompileShaders() {
+	GLuint RendererOpenGL::CompileShaders() {
 		GLuint program_handle = glCreateProgram();
 
 		if (program_handle == 0) {
 			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Failed to create shader program handle\n");
-			return;
+			return 0;
 		}
 
 		std::string vertex_shader_text;
@@ -109,7 +131,7 @@ namespace ReneNgine {
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Invalid shader program: %s\n", program_log);
 		}
 
-		glUseProgram(program_handle);
+		return program_handle;
 	}
 
 	bool RendererOpenGL::LoadShaderText(const char* file_name, std::string& output) {
@@ -168,20 +190,13 @@ namespace ReneNgine {
 		//c += 0.01f;
 		//c = fmod(c, 1.0);
 		//glClearColor(c, c, c, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		glUseProgram(shader_program_handle);
 		// Bind the buffer
-		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_handle);
-		glEnableVertexAttribArray(0);	// Index 0 pertains to the vertex position, so we enable that index
-		glVertexAttribPointer(
-			0,			// Starting index
-			3,			// How many elements does one vertex have
-			GL_FLOAT,	// Data type
-			GL_FALSE,
-			3 * sizeof(float),
-			(void *) nullptr);
+		glBindVertexArray(vertex_array_object_handle);
+		
 		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDisableVertexAttribArray(0);
 
 		SDL_GL_SwapWindow(window);
 	}

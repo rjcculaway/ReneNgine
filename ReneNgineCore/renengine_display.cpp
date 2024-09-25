@@ -25,7 +25,7 @@ namespace ReneNgine {
 		window = SDL_CreateWindow("ReneNgine", 
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
 			display_mode.w, display_mode.h, 
-			SDL_WINDOW_BORDERLESS | SDL_WINDOW_OPENGL);
+			SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
 
 		if (!window) {

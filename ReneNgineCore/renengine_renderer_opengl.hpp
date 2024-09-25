@@ -8,8 +8,8 @@
 
 #include "renengine_renderer.hpp"
 
-constexpr int RENENGINE_OPENGL_MAJOR_VERSION = 3;
-constexpr int RENENGINE_OPENGL_MINOR_VERSION = 3;
+constexpr int RENENGINE_OPENGL_MAJOR_VERSION = 4;
+constexpr int RENENGINE_OPENGL_MINOR_VERSION = 6;
 
 const std::string vertex_shader_filename = "vertex.vert";
 const std::string fragment_shader_filename = "fragment.frag";
@@ -26,20 +26,16 @@ namespace ReneNgine {
 		SDL_DisplayMode display_mode;
 
 		GLuint vertex_buffer_object_handle;
-
-		float vertices[9] = {
-			-0.5f, -0.5f, 1.0f,
-			 0.0f,  0.5f, 1.0f,
-			 0.5f, -0.5f, 1.0f,
-		};
+		GLuint vertex_array_object_handle;
+		GLuint shader_program_handle;
 
 		void ConfigureOpenGLContext();
 		
-		void CreateVertexBuffer();
-		void DestroyVertexBuffer();
+		void CreateVertexArray();
+		void Cleanup();
 
 		bool LoadShaderText(const char* file_name, ::std::string& output);
 		void LoadShaderAndAttachToProgram(GLuint program_handle, const std::string& shader_text, GLenum shader_type);
-		void CompileShaders();
+		GLuint CompileShaders();
 	};
 }
