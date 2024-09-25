@@ -30,6 +30,9 @@
     <ClCompile Include="renengine_renderer_opengl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="renengine_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renengine_display.hpp">
@@ -44,5 +47,16 @@
     <ClInclude Include="renengine_renderer_opengl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="renengine_renderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vertex.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="fragment.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

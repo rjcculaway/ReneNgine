@@ -1,13 +1,16 @@
 #include "renengine_renderer_opengl.hpp"
 
 #include <iostream>
-#include <SDL.h>
+#include <fstream>
 #include <GL/glew.h>
+#include <SDL.h>
 #include <glm.hpp>
 
 namespace ReneNgine {
-	RendererOpenGL::RendererOpenGL(SDL_Window* window) {
+	RendererOpenGL::RendererOpenGL(SDL_Window* window, SDL_DisplayMode) {
 		this->window = window;
+		this->display_mode = display_mode;
+
 		ConfigureOpenGLContext();
 		// Setup OpenGL context
 		context = SDL_GL_CreateContext(window);
@@ -22,22 +25,30 @@ namespace ReneNgine {
 		if (result != GLEW_OK) {
 			SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Error querying and initializing OpenGL extensions: %s\n", glewGetErrorString(result));
 		}
-		std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
+		SDL_Log("Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
 		// Set default state of context
 		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-		glCullFace(GL_BACK); // Backface culling
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_DEPTH_TEST); // Depth test to avoid overdraw
+
+		// Culling
+		glFrontFace(GL_CW);			// Expect clockwise winding order for culling
+		glCullFace(GL_BACK);		// Backface culling
+		glEnable(GL_CULL_FACE);		// Culling
+
+		glEnable(GL_DEPTH_TEST);	// Depth test to avoid overdraw
 		glDisable(GL_STENCIL_TEST);
+
+		glViewport(0, 0, display_mode.w, display_mode.h);
+
+		// Setup buffers
+		CreateVertexBuffer();
+
+		// Compile shaders
+		CompileShaders();
 	}
 	RendererOpenGL::~RendererOpenGL() {
+		DestroyVertexBuffer();
 		SDL_GL_DeleteContext(context);
-	}
-
-	void RendererOpenGL::render() {
-		glClear(GL_COLOR_BUFFER_BIT);
-		SDL_GL_SwapWindow(window);
 	}
 
 	void RendererOpenGL::ConfigureOpenGLContext() {
@@ -53,4 +64,126 @@ namespace ReneNgine {
 		// Enable VSync
 		SDL_GL_SetSwapInterval(-1);
 	}
+
+	void RendererOpenGL::CreateVertexBuffer() {
+		glGenBuffers(1, &vertex_buffer_object_handle);								// Create a handle for the vertex buffer object
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_handle);					// Tells OpenGL that the handle is for vertex positions
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 9, vertices, GL_STATIC_DRAW);	// Actually load the data. GL_STATIC_DRAW signals intent that the buffer will be populated ONCE, and drawn multiple times
+	}
+
+	void RendererOpenGL::DestroyVertexBuffer() {
+		glDeleteBuffers(1, &vertex_buffer_object_handle);
+	}
+	
+	void RendererOpenGL::CompileShaders() {
+		GLuint program_handle = glCreateProgram();
+
+		if (program_handle == 0) {
+			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Failed to create shader program handle\n");
+			return;
+		}
+
+		std::string vertex_shader_text;
+		std::string fragment_shader_text;
+
+		LoadShaderText(vertex_shader_filename.c_str(), vertex_shader_text);
+		LoadShaderText(fragment_shader_filename.c_str(), fragment_shader_text);
+
+		LoadShaderAndAttachToProgram(program_handle, vertex_shader_text, GL_VERTEX_SHADER);
+		LoadShaderAndAttachToProgram(program_handle, fragment_shader_text, GL_FRAGMENT_SHADER);
+
+		GLint program_status = 0;
+		GLchar program_log[1024] = { 0 };
+
+		glLinkProgram(program_handle);
+		glGetProgramiv(program_handle, GL_LINK_STATUS, &program_status);
+		if (!program_status) {
+			glGetProgramInfoLog(program_handle, sizeof(program_log), NULL, program_log);
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to link shader program: %s\n", program_log);
+		}
+
+		glValidateProgram(program_handle);
+		glGetProgramiv(program_handle, GL_VALIDATE_STATUS, &program_status);
+		if (!program_status) {
+			glGetProgramInfoLog(program_handle, sizeof(program_log), NULL, program_log);
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Invalid shader program: %s\n", program_log);
+		}
+
+		glUseProgram(program_handle);
+	}
+
+	bool RendererOpenGL::LoadShaderText(const char* file_name, std::string& output) {
+		std::ifstream file_handle(file_name);
+		if (!file_handle.is_open()) {
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to load file: %s\n", file_name);
+			return false;
+		}
+
+		std::string line;
+		while (std::getline(file_handle, line)) {
+			output += line + "\n";
+		}
+		file_handle.close();
+
+		return true;
+	}
+
+	void RendererOpenGL::LoadShaderAndAttachToProgram(GLuint program_handle, const std::string& shader_text, GLenum shader_type) {
+		GLuint shader_handle = glCreateShader(shader_type);
+
+		if (shader_handle == 0) {
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create handle for shader type %d.\n", shader_type);
+		}
+
+		// Set the source string
+		const GLchar* sources[1] = {};
+		sources[0] = shader_text.c_str();
+
+		GLint source_lengths[1] = {};
+		source_lengths[0] = shader_text.size();
+
+		glShaderSource(shader_handle, 1, sources, source_lengths);
+
+		// Compile the shader
+		glCompileShader(shader_handle);
+
+		GLint compile_status = 0;
+		glGetShaderiv(shader_handle, GL_COMPILE_STATUS, &compile_status);
+
+		if (!compile_status) {
+			GLchar info_log[1024];
+			glGetShaderInfoLog(shader_handle, 1024, NULL, info_log);
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to compile shader for shader type %d: %s\n", shader_type, info_log);
+		}
+
+		// Attach the shader
+		glAttachShader(program_handle, shader_handle);
+
+		// Delete the shader handle as it is no longer needed
+		glDeleteShader(shader_handle);
+	}
+
+	void RendererOpenGL::render() {
+		static GLclampf c = 0.0f;
+		//c += 0.01f;
+		//c = fmod(c, 1.0);
+		//glClearColor(c, c, c, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Bind the buffer
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_handle);
+		glEnableVertexAttribArray(0);	// Index 0 pertains to the vertex position, so we enable that index
+		glVertexAttribPointer(
+			0,			// Starting index
+			3,			// How many elements does one vertex have
+			GL_FLOAT,	// Data type
+			GL_FALSE,
+			3 * sizeof(float),
+			(void *) nullptr);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDisableVertexAttribArray(0);
+
+		SDL_GL_SwapWindow(window);
+	}
+
 }

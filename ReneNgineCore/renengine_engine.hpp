@@ -9,7 +9,7 @@ namespace ReneNgine {
 	public:
 		Display display;
 		Controls controls{};
-		RendererOpenGL renderer{display.window};
+		RendererOpenGL renderer{display.window, display.display_mode};
 		void StartGameLoop();
 	};
 }

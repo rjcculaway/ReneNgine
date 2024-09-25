@@ -18,10 +18,13 @@ namespace ReneNgine {
 		}
 
 		SDL_GetCurrentDisplayMode(0, &display_mode);
+		display_mode.w /= 2;
+		display_mode.h /= 2;
+		fps = display_mode.refresh_rate;
 		// Create the window
 		window = SDL_CreateWindow("ReneNgine", 
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-			display_mode.w / 2, display_mode.h / 2, 
+			display_mode.w, display_mode.h, 
 			SDL_WINDOW_BORDERLESS | SDL_WINDOW_OPENGL);
 
 

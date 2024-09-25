@@ -138,13 +138,19 @@
     <ClCompile Include="renengine_controls.cpp" />
     <ClCompile Include="renengine_display.cpp" />
     <ClCompile Include="renengine_engine.cpp" />
+    <ClCompile Include="renengine_renderer.cpp" />
     <ClCompile Include="renengine_renderer_opengl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renengine_controls.hpp" />
     <ClInclude Include="renengine_display.hpp" />
     <ClInclude Include="renengine_engine.hpp" />
+    <ClInclude Include="renengine_renderer.hpp" />
     <ClInclude Include="renengine_renderer_opengl.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment.frag" />
+    <None Include="vertex.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

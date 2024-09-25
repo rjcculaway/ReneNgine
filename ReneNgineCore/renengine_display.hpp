@@ -11,7 +11,10 @@ namespace ReneNgine {
 
 		Display();
 		~Display();
+
+		int GetFPS() const { return fps; }
 	private:
+		int fps = 60;
 		bool setup();
 		bool cleanup();
 	};
