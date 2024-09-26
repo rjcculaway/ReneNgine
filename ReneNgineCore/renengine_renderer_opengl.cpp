@@ -4,12 +4,23 @@
 #include <fstream>
 #include <GL/glew.h>
 #include <SDL.h>
-#include <glm.hpp>
+
+
+#define GLM_FORCE_LEFT_HANDED
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+
 
 namespace ReneNgine {
 	RendererOpenGL::RendererOpenGL(SDL_Window* window) {
 		this->window = window;
 		SDL_GetCurrentDisplayMode(0, &this->display_mode);
+		SDL_GetWindowSize(window, &window_width, &window_height);
 
 		ConfigureOpenGLContext();
 		// Setup OpenGL context
@@ -32,17 +43,18 @@ namespace ReneNgine {
 
 		// Culling
 		glFrontFace(GL_CW);			// Expect clockwise winding order for culling
-		glCullFace(GL_BACK);		// Backface culling
 		glEnable(GL_CULL_FACE);		// Culling
+		glCullFace(GL_BACK);		// Backface culling
 
 		glEnable(GL_DEPTH_TEST);	// Depth test to avoid overdraw
 		glDisable(GL_STENCIL_TEST);
 
+		// Compile shaders
+		shader_program_handle = CompileShaders();
+
 		// Setup buffers
 		CreateVertexArray();
 
-		// Compile shaders
-		shader_program_handle = CompileShaders();
 
 		glViewport(0, 0, display_mode.w, display_mode.h);
 	}
@@ -69,23 +81,57 @@ namespace ReneNgine {
 	void RendererOpenGL::HandleRendererEvents(const SDL_Event& event) {
 		if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
 			SDL_Log("Resized window: %d × %d", event.window.data1, event.window.data2);
-			glViewport(0, 0, event.window.data1, event.window.data2);
+			window_width = event.window.data1;
+			glViewport(0, 0, window_width, window_height);
 		}
 	}
 
 	void RendererOpenGL::CreateVertexArray() {
-		glm::vec3 vertices[3] = {
-			{-0.5f, -0.5f, 0.0f}, // left  
-			 {0.0f,  0.5f, 0.0f}, // top   
-			 {0.5f, -0.5f, 0.0f}, // right 
-		};
-		glGenVertexArrays(1, &vertex_array_object_handle);
-		glGenBuffers(1, &vertex_buffer_object_handle);								// Create a handle for the vertex buffer object
+		// Load model
+		// TODO: Provide mechanism for loading other models
 
-		glBindVertexArray(vertex_array_object_handle);
+		std::string model_file_name = "cube.obj";
+		tinyobj::ObjReaderConfig reader_config;
+		reader_config.mtl_search_path = "./";
+		reader_config.triangulate = false;
+
+		tinyobj::ObjReader reader;
+		if (!reader.ParseFromFile(model_file_name, reader_config)) {
+			if (!reader.Error().empty()) {
+				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load .obj file.\n");
+			}
+		}
+
+		if (!reader.Warning().empty()) {
+			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "TinyObjReader: %s\n", reader.Warning());
+		}
+
+		auto& attrib = reader.GetAttrib();
+		auto& materials = reader.GetMaterials();
+		auto& shapes = reader.GetShapes();
+
+		std::vector<float> vertices = attrib.vertices;
+		size_t indices_size = shapes[0].mesh.indices.size();
+		std::vector<unsigned int> indices(indices_size, 0);
+		for (size_t i = 0; i < indices_size; i++) {
+			indices[i] = shapes[0].mesh.indices[i].vertex_index;
+		}
+
+		glGenVertexArrays(1, &vertex_array_object_handle);							// The VAO will "store" the state changes we made in the following lines
+		glGenBuffers(1, &vertex_buffer_object_handle);								// Create a handle for the vertex buffer object
+		glGenBuffers(1, &vertex_element_array_buffer_object_handle);
+
+		// Query the location of our uniforms
+		shader_transform_location = glGetUniformLocation(shader_program_handle, "transform");
+		if (shader_transform_location == -1) {
+			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Failed to query uniform location.\n");
+		}
 		
+		glBindVertexArray(vertex_array_object_handle);
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_handle);					// Tells OpenGL that the handle is for vertex positions
-		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 3, vertices, GL_STATIC_DRAW);	// Actually load the data. GL_STATIC_DRAW signals intent that the buffer will be populated ONCE, and drawn multiple times
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);	// Actually load the data. GL_STATIC_DRAW signals intent that the buffer will be populated ONCE, and drawn multiple times
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertex_element_array_buffer_object_handle);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 		glVertexAttribPointer(
 			0,			// Starting index
 			3,			// How many elements does one vertex have
@@ -194,17 +240,27 @@ namespace ReneNgine {
 	}
 
 	void RendererOpenGL::Render() {
-		static GLclampf c = 0.0f;
-		//c += 0.01f;
+		static float c = 1.0;
+		glm::mat4 model = glm::identity<glm::mat4>();
+		glm::mat4 projection = glm::perspective((float)glm::radians(30.0), (float)window_width / window_height, 0.1f, 150.0f);
+		//glm::mat4 projection = glm::ortho(-100, 100, 100, -100);
+		c += 0.01f;
 		//c = fmod(c, 1.0);
+		
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, c));
+		model = glm::rotate(model, c, glm::vec3(0.0, 1.0, 0.0));
+		//transform = glm::scale(transform, glm::vec3(c));
+		glm::mat4 projection_model_matrix = projection * model;
+		//std::cout << scale[0][0] << std::endl;
 		//glClearColor(c, c, c, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(shader_program_handle);
+		glUniformMatrix4fv(shader_transform_location, 1, GL_FALSE, glm::value_ptr(projection_model_matrix));
 		// Bind the buffer
 		glBindVertexArray(vertex_array_object_handle);
 		
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 		SDL_GL_SwapWindow(window);
 	}

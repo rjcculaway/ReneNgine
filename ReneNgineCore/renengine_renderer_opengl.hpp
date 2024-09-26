@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <tiny_obj_loader.h>
 
 #include "renengine_renderer.hpp"
 
@@ -25,10 +26,17 @@ namespace ReneNgine {
 		SDL_GLContext context;
 		SDL_Window* window;
 		SDL_DisplayMode display_mode;
+		int window_width;
+		int window_height;
 
 		GLuint vertex_buffer_object_handle;
+		GLuint vertex_element_array_buffer_object_handle;
 		GLuint vertex_array_object_handle;
 		GLuint shader_program_handle;
+
+		GLint shader_transform_location;
+
+		
 
 		void ConfigureOpenGLContext();
 		
