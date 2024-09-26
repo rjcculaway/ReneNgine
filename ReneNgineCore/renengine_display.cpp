@@ -18,14 +18,13 @@ namespace ReneNgine {
 		}
 
 		SDL_GetCurrentDisplayMode(0, &display_mode);
-		display_mode.w /= 2;
-		display_mode.h /= 2;
+		std::cout << display_mode.w << " x " << display_mode.h << std::endl;
 		fps = display_mode.refresh_rate;
 		// Create the window
 		window = SDL_CreateWindow("ReneNgine", 
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-			display_mode.w, display_mode.h, 
-			SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+			0, 0, 
+			SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
 
 		if (!window) {

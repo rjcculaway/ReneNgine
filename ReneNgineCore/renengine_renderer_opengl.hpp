@@ -17,9 +17,10 @@ const std::string fragment_shader_filename = "fragment.frag";
 namespace ReneNgine {
 	class RendererOpenGL : virtual public Renderer {
 	public:
-		RendererOpenGL(SDL_Window* window, SDL_DisplayMode display_mode);
+		RendererOpenGL(SDL_Window* window);
 		~RendererOpenGL();
-		virtual void render() override;
+		virtual void Render() override;
+		virtual void HandleRendererEvents(const SDL_Event& event) override;
 	private:
 		SDL_GLContext context;
 		SDL_Window* window;

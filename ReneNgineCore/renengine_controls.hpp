@@ -5,8 +5,6 @@
 namespace ReneNgine {
 	class Controls {
 	public:
-		bool HandleEvents();
-	private:
-		SDL_Event event;
+		bool HandleControlEvents(const SDL_Event& event);
 	};
 }

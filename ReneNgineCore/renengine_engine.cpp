@@ -8,15 +8,20 @@ namespace ReneNgine {
 			uint64_t delta_time = current_frame_time - last_frame_time;
 
 			float seconds_per_frame = 1.0f / display.GetFPS();
-			// Process inputs
-			if (!controls.HandleEvents()) {
-				return;
+
+			SDL_Event event;
+			while (SDL_PollEvent(&event)) {
+				controls.HandleControlEvents(event);
+				renderer.HandleRendererEvents(event);
+				if (event.type == SDL_QUIT) {
+					return;
+				}
 			}
-			
+
 			// Update game state
 
 			// Render
-			renderer.render();
+			renderer.Render();
 
 		}
 	}

@@ -7,9 +7,9 @@
 #include <glm.hpp>
 
 namespace ReneNgine {
-	RendererOpenGL::RendererOpenGL(SDL_Window* window, SDL_DisplayMode) {
+	RendererOpenGL::RendererOpenGL(SDL_Window* window) {
 		this->window = window;
-		this->display_mode = display_mode;
+		SDL_GetCurrentDisplayMode(0, &this->display_mode);
 
 		ConfigureOpenGLContext();
 		// Setup OpenGL context
@@ -38,14 +38,15 @@ namespace ReneNgine {
 		glEnable(GL_DEPTH_TEST);	// Depth test to avoid overdraw
 		glDisable(GL_STENCIL_TEST);
 
-		//glViewport(0, 0, display_mode.w, display_mode.h);
-
 		// Setup buffers
 		CreateVertexArray();
 
 		// Compile shaders
 		shader_program_handle = CompileShaders();
+
+		glViewport(0, 0, display_mode.w, display_mode.h);
 	}
+
 	RendererOpenGL::~RendererOpenGL() {
 		Cleanup();
 		SDL_GL_DeleteContext(context);
@@ -65,8 +66,15 @@ namespace ReneNgine {
 		SDL_GL_SetSwapInterval(-1);
 	}
 
+	void RendererOpenGL::HandleRendererEvents(const SDL_Event& event) {
+		if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
+			SDL_Log("Resized window: %d × %d", event.window.data1, event.window.data2);
+			glViewport(0, 0, event.window.data1, event.window.data2);
+		}
+	}
+
 	void RendererOpenGL::CreateVertexArray() {
-		glm::vec3 vertices[9] = {
+		glm::vec3 vertices[3] = {
 			{-0.5f, -0.5f, 0.0f}, // left  
 			 {0.0f,  0.5f, 0.0f}, // top   
 			 {0.5f, -0.5f, 0.0f}, // right 
@@ -162,7 +170,7 @@ namespace ReneNgine {
 		sources[0] = shader_text.c_str();
 
 		GLint source_lengths[1] = {};
-		source_lengths[0] = shader_text.size();
+		source_lengths[0] = (GLint) shader_text.size();
 
 		glShaderSource(shader_handle, 1, sources, source_lengths);
 
@@ -185,7 +193,7 @@ namespace ReneNgine {
 		glDeleteShader(shader_handle);
 	}
 
-	void RendererOpenGL::render() {
+	void RendererOpenGL::Render() {
 		static GLclampf c = 0.0f;
 		//c += 0.01f;
 		//c = fmod(c, 1.0);
