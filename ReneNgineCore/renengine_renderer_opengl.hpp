@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include <GL/glew.h>
 #include <SDL.h>
@@ -8,6 +9,7 @@
 #include <tiny_obj_loader.h>
 
 #include "renengine_renderer.hpp"
+#include "renengine_renderer_shader_opengl.hpp"
 
 constexpr int RENENGINE_OPENGL_MAJOR_VERSION = 4;
 constexpr int RENENGINE_OPENGL_MINOR_VERSION = 6;
@@ -32,19 +34,12 @@ namespace ReneNgine {
 		GLuint vertex_buffer_object_handle;
 		GLuint vertex_element_array_buffer_object_handle;
 		GLuint vertex_array_object_handle;
-		GLuint shader_program_handle;
-
-		GLint shader_transform_location;
-
 		
+		std::unique_ptr<ShaderOpenGL> shader_program;
 
 		void ConfigureOpenGLContext();
 		
 		void CreateVertexArray();
-		void Cleanup();
-
-		bool LoadShaderText(const char* file_name, ::std::string& output);
-		void LoadShaderAndAttachToProgram(GLuint program_handle, const std::string& shader_text, GLenum shader_type);
-		GLuint CompileShaders();
+		void Cleanup() const;
 	};
 }

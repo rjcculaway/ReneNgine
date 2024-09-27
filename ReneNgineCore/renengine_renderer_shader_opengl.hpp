@@ -1,0 +1,31 @@
+#pragma once
+
+#include "renengine_renderer_shader.hpp"
+
+#include <string>
+#include <unordered_map>
+
+#include <GL/glew.h>
+
+#define GLM_FORCE_LEFT_HANDED
+#include <glm/glm.hpp>
+
+namespace ReneNgine {
+	class ShaderOpenGL : virtual public Shader {
+	public:
+		ShaderOpenGL(const char* vertex_shader_source_path, const char* fragment_shader_source_path);
+		~ShaderOpenGL();
+		void Use() const;
+		void SetUniformFloat(const std::string& name, float value);
+		void SetUniformMatrix4FV(const std::string& name, glm::mat4 value);
+	private:
+		GLint program_handle;
+
+		std::unordered_map<std::string, GLint> uniform_locations{};
+
+		GLint QueryUniformLocation(const std::string& name);
+
+		void CompileShaderAndAttachToProgram(GLuint program_handle, const std::string& shader_text, GLenum shader_type);
+		GLuint CompileShaders(const std::string& vertex_shader_source, const std::string& fragment_shader_source);
+	};
+}
