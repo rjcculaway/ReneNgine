@@ -151,20 +151,20 @@ namespace ReneNgine {
 			sizeof(Vertex),
 			(void*) nullptr);
 		glVertexAttribPointer(
-			offsetof(Vertex, normals),
+			1,
 			3,
 			GL_FLOAT,
 			GL_FALSE,
 			sizeof(Vertex),
-			(void *) nullptr
+			(void *) offsetof(Vertex, normals)
 		);
 		glVertexAttribPointer(
-			offsetof(Vertex, texture_coordinates),
+			2,
 			2,
 			GL_FLOAT,
 			GL_FALSE,
 			sizeof(Vertex),
-			(void*) nullptr
+			(void*) offsetof(Vertex, texture_coordinates) 
 		);
 		glEnableVertexAttribArray(0);	// Index 0 pertains to the vertex position, so we enable that index
 		glEnableVertexAttribArray(1);
@@ -197,6 +197,7 @@ namespace ReneNgine {
 
 		shader_program->Use();
 		shader_program->SetUniformMatrix4FV("transform", projection_model_matrix);
+		shader_program->SetUniformFloat("c", c);
 		// Bind the buffer
 		glBindVertexArray(vertex_array_object_handle);
 		

@@ -145,6 +145,8 @@
     <ClCompile Include="renengine_renderer_opengl.cpp" />
     <ClCompile Include="renengine_renderer_shader.cpp" />
     <ClCompile Include="renengine_renderer_shader_opengl.cpp" />
+    <ClCompile Include="renengine_resource_texture.cpp" />
+    <ClCompile Include="renengine_renderer_texture_opengl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renengine_controls.hpp" />
@@ -155,6 +157,8 @@
     <ClInclude Include="renengine_renderer_opengl.hpp" />
     <ClInclude Include="renengine_renderer_shader.hpp" />
     <ClInclude Include="renengine_renderer_shader_opengl.hpp" />
+    <ClInclude Include="renengine_resource_texture.hpp" />
+    <ClInclude Include="renengine_renderer_texture_opengl.hpp" />
     <ClInclude Include="renengine_vertex.hpp" />
   </ItemGroup>
   <ItemGroup>
