@@ -36,6 +36,7 @@ namespace ReneNgine {
 		GLuint vertex_array_object_handle;
 		
 		std::unique_ptr<ShaderOpenGL> shader_program;
+		std::unique_ptr<TextureOpenGL> texture;
 
 		void ConfigureOpenGLContext();
 		

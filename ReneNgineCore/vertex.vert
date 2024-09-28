@@ -13,4 +13,6 @@ void main () {
 	vec4 transformed_position = transform * vec4(position, 1.0);	// Column major, post multiplication 
 	gl_Position = transformed_position;
 	fragment_position = vec4(position, 1.0);
+	fragment_normal = normal;
+	fragment_uv = uv;
 }

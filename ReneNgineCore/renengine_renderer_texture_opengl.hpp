@@ -8,6 +8,9 @@ namespace ReneNgine {
 	class TextureOpenGL {
 	public:
 		TextureOpenGL(const char* file_path);
+		~TextureOpenGL();
+
+		GLuint GetTextureHandle() const { return texture_handle; }
 	private:
 		GLuint texture_handle;
 	};

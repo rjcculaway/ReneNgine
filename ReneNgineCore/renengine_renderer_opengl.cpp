@@ -54,6 +54,7 @@ namespace ReneNgine {
 		// Load sample shader
 		// TODO: Load shaders dynamically depending on the model
 		shader_program = std::unique_ptr<ShaderOpenGL>(new ShaderOpenGL("./vertex.vert", "./fragment.frag"));
+		texture = std::make_unique<TextureOpenGL>("./assets/rock_face_03_diff_1k.jpg");
 
 	}
 
@@ -88,7 +89,7 @@ namespace ReneNgine {
 		// Load model
 		// TODO: Provide mechanism for loading other models
 
-		std::string model_file_name = "cube.obj";
+		std::string model_file_name = "./assets/cube.obj";
 		tinyobj::ObjReaderConfig reader_config;
 		reader_config.mtl_search_path = "./";
 		reader_config.triangulate = false;
@@ -184,10 +185,10 @@ namespace ReneNgine {
 		glm::mat4 model = glm::identity<glm::mat4>();
 		glm::mat4 projection = glm::perspective((float)glm::radians(30.0), (float)window_width / window_height, 0.1f, 150.0f);
 		//glm::mat4 projection = glm::ortho(-100, 100, 100, -100);
-		c += 0.05f;
+		c += 0.01f;
 		//c = fmod(c, 1.0);
 		
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 30.0 - c));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 15.0));
 		model = glm::rotate(model, c, glm::vec3(0.0, 1.0, 0.0));
 		//model = glm::scale(model, glm::vec3(0.5 + c));
 		glm::mat4 projection_model_matrix = projection * model;
@@ -198,7 +199,8 @@ namespace ReneNgine {
 		shader_program->Use();
 		shader_program->SetUniformMatrix4FV("transform", projection_model_matrix);
 		shader_program->SetUniformFloat("c", c);
-		// Bind the buffer
+		// Bind the texture and buffer
+		glBindTexture(GL_TEXTURE_2D, texture->GetTextureHandle());
 		glBindVertexArray(vertex_array_object_handle);
 		
 		glDrawArrays(GL_TRIANGLES, 0, 36);

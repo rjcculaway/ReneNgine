@@ -1,6 +1,7 @@
 #pragma once
 
 #include "renengine_renderer_shader.hpp"
+#include "renengine_renderer_texture_opengl.hpp"
 
 #include <string>
 #include <unordered_map>
