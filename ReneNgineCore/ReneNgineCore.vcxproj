@@ -106,6 +106,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..;$(ProjectDir)..\..\..\glew-2.1.0\include\;$(ProjectDir)..\..\..\SDL2-2.30.7\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,6 +124,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..;$(ProjectDir)..\..\..\glew-2.1.0\include\;$(ProjectDir)..\..\..\SDL2-2.30.7\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,6 +140,7 @@
     <ClCompile Include="renengine_controls.cpp" />
     <ClCompile Include="renengine_display.cpp" />
     <ClCompile Include="renengine_engine.cpp" />
+    <ClCompile Include="renengine_mesh.cpp" />
     <ClCompile Include="renengine_renderer.cpp" />
     <ClCompile Include="renengine_renderer_opengl.cpp" />
     <ClCompile Include="renengine_renderer_shader.cpp" />
@@ -147,10 +150,12 @@
     <ClInclude Include="renengine_controls.hpp" />
     <ClInclude Include="renengine_display.hpp" />
     <ClInclude Include="renengine_engine.hpp" />
+    <ClInclude Include="renengine_mesh.hpp" />
     <ClInclude Include="renengine_renderer.hpp" />
     <ClInclude Include="renengine_renderer_opengl.hpp" />
     <ClInclude Include="renengine_renderer_shader.hpp" />
     <ClInclude Include="renengine_renderer_shader_opengl.hpp" />
+    <ClInclude Include="renengine_vertex.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.frag" />

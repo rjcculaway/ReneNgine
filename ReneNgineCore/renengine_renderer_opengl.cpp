@@ -1,4 +1,5 @@
 #include "renengine_renderer_opengl.hpp"
+#include "renengine_vertex.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -62,7 +63,7 @@ namespace ReneNgine {
 	}
 
 	void RendererOpenGL::ConfigureOpenGLContext() {
-		// This engine will use OpenGL 4.5.
+		// This engine will use OpenGL 4.6.
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, RENENGINE_OPENGL_MAJOR_VERSION);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, RENENGINE_OPENGL_MINOR_VERSION);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -106,31 +107,68 @@ namespace ReneNgine {
 		auto& attrib = reader.GetAttrib();
 		auto& materials = reader.GetMaterials();
 		auto& shapes = reader.GetShapes();
-
-		std::vector<float> vertices = attrib.vertices;
-		size_t indices_size = shapes[0].mesh.indices.size();
-		std::vector<unsigned int> indices(indices_size, 0);
-		for (size_t i = 0; i < indices_size; i++) {
-			indices[i] = shapes[0].mesh.indices[i].vertex_index;
+		
+		size_t num_indices = 0;
+		for (auto& shape : shapes) {
+			num_indices += shape.mesh.indices.size();
 		}
+		std::cout << num_indices << std::endl;
+		std::vector<Vertex> vertices(num_indices);
+		size_t vertices_idx = 0;
+		for (const auto& shape : shapes) {
+			for (const auto& index : shape.mesh.indices) {
+				Vertex& vertex = vertices[vertices_idx++];
+				vertex.position = glm::vec3(
+					attrib.vertices[3 * index.vertex_index + 0],
+					attrib.vertices[3 * index.vertex_index + 1],
+					attrib.vertices[3 * index.vertex_index + 2]
+				);
+				vertex.normals = glm::vec3(
+					attrib.normals[3 * index.normal_index + 0],
+					attrib.normals[3 * index.normal_index + 1],
+					attrib.normals[3 * index.normal_index + 2]
+				);
+				vertex.texture_coordinates = glm::vec2(
+					attrib.texcoords[2 * index.texcoord_index + 0],
+					attrib.texcoords[2 * index.texcoord_index + 1]
+				);
+			}
+		}
+		std::cout << vertices_idx << std::endl;
 
 		glGenVertexArrays(1, &vertex_array_object_handle);							// The VAO will "store" the state changes we made in the following lines
 		glGenBuffers(1, &vertex_buffer_object_handle);								// Create a handle for the vertex buffer object
 		glGenBuffers(1, &vertex_element_array_buffer_object_handle);
 		
 		glBindVertexArray(vertex_array_object_handle);
-		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_handle);					// Tells OpenGL that the handle is for vertex positions
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);	// Actually load the data. GL_STATIC_DRAW signals intent that the buffer will be populated ONCE, and drawn multiple times
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertex_element_array_buffer_object_handle);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_handle);					// Tells OpenGL that the handle is for vertex attributes
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);	// Actually load the data. GL_STATIC_DRAW signals intent that the buffer will be populated ONCE, and drawn multiple times
 		glVertexAttribPointer(
 			0,			// Starting index
 			3,			// How many elements does one vertex have
 			GL_FLOAT,	// Data type
 			GL_FALSE,
-			3 * sizeof(float),
+			sizeof(Vertex),
 			(void*) nullptr);
+		glVertexAttribPointer(
+			offsetof(Vertex, normals),
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vertex),
+			(void *) nullptr
+		);
+		glVertexAttribPointer(
+			offsetof(Vertex, texture_coordinates),
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vertex),
+			(void*) nullptr
+		);
 		glEnableVertexAttribArray(0);	// Index 0 pertains to the vertex position, so we enable that index
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, 0);	// Unbind array buffer
 		glBindVertexArray(0);
@@ -146,12 +184,12 @@ namespace ReneNgine {
 		glm::mat4 model = glm::identity<glm::mat4>();
 		glm::mat4 projection = glm::perspective((float)glm::radians(30.0), (float)window_width / window_height, 0.1f, 150.0f);
 		//glm::mat4 projection = glm::ortho(-100, 100, 100, -100);
-		c += 0.01f;
+		c += 0.05f;
 		//c = fmod(c, 1.0);
 		
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, c));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 30.0 - c));
 		model = glm::rotate(model, c, glm::vec3(0.0, 1.0, 0.0));
-		//transform = glm::scale(transform, glm::vec3(c));
+		//model = glm::scale(model, glm::vec3(0.5 + c));
 		glm::mat4 projection_model_matrix = projection * model;
 		//std::cout << scale[0][0] << std::endl;
 		//glClearColor(c, c, c, 1.0);
@@ -162,7 +200,7 @@ namespace ReneNgine {
 		// Bind the buffer
 		glBindVertexArray(vertex_array_object_handle);
 		
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		SDL_GL_SwapWindow(window);
 	}
