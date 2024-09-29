@@ -17,7 +17,10 @@ namespace ReneNgine {
 		ShaderOpenGL(const char* vertex_shader_source_path, const char* fragment_shader_source_path);
 		~ShaderOpenGL();
 		void Use() const;
+		void SetUniform3FV(const std::string& name, glm::vec3 value);
+		void SetUniformInt(const std::string& name, int value);
 		void SetUniformFloat(const std::string& name, float value);
+		void SetUniformMatrix3FV(const std::string& name, glm::mat3 value);
 		void SetUniformMatrix4FV(const std::string& name, glm::mat4 value);
 	private:
 		GLint program_handle;

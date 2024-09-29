@@ -105,13 +105,29 @@ namespace ReneNgine {
 		return uniform_locations[name];
 	}
 
+	void ShaderOpenGL::SetUniform3FV(const std::string& name, glm::vec3 value) {
+		GLint location = QueryUniformLocation(name);
+		glUniform3fv(location, 1, glm::value_ptr(value));
+	}
+	
+	void ShaderOpenGL::SetUniformInt(const std::string& name, int value) {
+		GLint location = QueryUniformLocation(name);
+		glUniform1i(location, value);
+	}
+
 	void ShaderOpenGL::SetUniformFloat(const std::string& name, float value) {
 		GLint location = QueryUniformLocation(name);
 		glUniform1fv(location, 1, &value);
+	}
+
+	void ShaderOpenGL::SetUniformMatrix3FV(const std::string& name, glm::mat3 value) {
+		GLint location = QueryUniformLocation(name);
+		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	void ShaderOpenGL::SetUniformMatrix4FV(const std::string& name, glm::mat4 value) {
 		GLint location = QueryUniformLocation(name);
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
+
 }

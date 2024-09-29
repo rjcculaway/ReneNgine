@@ -54,7 +54,8 @@ namespace ReneNgine {
 		// Load sample shader
 		// TODO: Load shaders dynamically depending on the model
 		shader_program = std::unique_ptr<ShaderOpenGL>(new ShaderOpenGL("./vertex.vert", "./fragment.frag"));
-		texture = std::make_unique<TextureOpenGL>("./assets/rock_face_03_diff_1k.jpg");
+		texture1 = std::make_unique<TextureOpenGL>("./assets/rock_face_03_diff_1k.jpg");
+		texture2 = std::make_unique<TextureOpenGL>("./assets/painted_concrete_diff_1k.jpg");
 
 	}
 
@@ -113,7 +114,7 @@ namespace ReneNgine {
 		for (auto& shape : shapes) {
 			num_indices += shape.mesh.indices.size();
 		}
-		std::cout << num_indices << std::endl;
+
 		std::vector<Vertex> vertices(num_indices);
 		size_t vertices_idx = 0;
 		for (const auto& shape : shapes) {
@@ -135,7 +136,6 @@ namespace ReneNgine {
 				);
 			}
 		}
-		std::cout << vertices_idx << std::endl;
 
 		glGenVertexArrays(1, &vertex_array_object_handle);							// The VAO will "store" the state changes we made in the following lines
 		glGenBuffers(1, &vertex_buffer_object_handle);								// Create a handle for the vertex buffer object
@@ -182,26 +182,39 @@ namespace ReneNgine {
 
 	void RendererOpenGL::Render() {
 		static float c = 1.0;
-		glm::mat4 model = glm::identity<glm::mat4>();
-		glm::mat4 projection = glm::perspective((float)glm::radians(30.0), (float)window_width / window_height, 0.1f, 150.0f);
+		glm::vec3 light_position = glm::normalize(glm::vec3(
+			0.0, 15.0, 15.0
+		));
+		glm::mat4 model_matrix = glm::identity<glm::mat4>();
+		glm::mat4 projection_matrix = glm::perspective((float)glm::radians(30.0), (float)window_width / window_height, 0.1f, 150.0f);
 		//glm::mat4 projection = glm::ortho(-100, 100, 100, -100);
 		c += 0.01f;
 		//c = fmod(c, 1.0);
 		
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 15.0));
-		model = glm::rotate(model, c, glm::vec3(0.0, 1.0, 0.0));
+		model_matrix = glm::translate(model_matrix, glm::vec3(0.0f, 0.0f, 15.0));
+		model_matrix = glm::rotate(model_matrix, c, glm::vec3(1.0, 1.0, 0.0));
 		//model = glm::scale(model, glm::vec3(0.5 + c));
-		glm::mat4 projection_model_matrix = projection * model;
+		glm::mat4 projection_model_matrix = projection_matrix * model_matrix;
+		glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model_matrix)));
 		//std::cout << scale[0][0] << std::endl;
 		//glClearColor(c, c, c, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader_program->Use();
-		shader_program->SetUniformMatrix4FV("transform", projection_model_matrix);
-		shader_program->SetUniformFloat("c", c);
 		// Bind the texture and buffer
-		glBindTexture(GL_TEXTURE_2D, texture->GetTextureHandle());
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1->GetTextureHandle());
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2->GetTextureHandle());
 		glBindVertexArray(vertex_array_object_handle);
+		
+		shader_program->Use();
+		shader_program->SetUniform3FV("light_position", light_position);
+		shader_program->SetUniformMatrix3FV("normal_matrix", normal_matrix);
+		shader_program->SetUniformMatrix4FV("model_matrix", model_matrix);
+		shader_program->SetUniformMatrix4FV("projection_matrix", projection_matrix);
+		shader_program->SetUniformFloat("c", c);
+		shader_program->SetUniformInt("texture_sampler1", 0);
+		shader_program->SetUniformInt("texture_sampler2", 1);
 		
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
