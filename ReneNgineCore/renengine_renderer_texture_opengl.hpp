@@ -5,13 +5,17 @@
 #include <GL/glew.h>
 
 namespace ReneNgine {
-	class TextureOpenGL {
-	public:
-		TextureOpenGL(const char* file_path);
-		~TextureOpenGL();
+	namespace Rendering {
+		namespace OpenGLCore {
+			class TextureOpenGL {
+			public:
+				TextureOpenGL(const char* file_path);
+				~TextureOpenGL();
 
-		GLuint GetTextureHandle() const { return texture_handle; }
-	private:
-		GLuint texture_handle;
-	};
+				GLuint GetTextureHandle() const { return texture_handle; }
+			private:
+				GLuint texture_handle;
+			};
+		}
+	}
 }

@@ -3,9 +3,9 @@
 #include <string>
 
 namespace ReneNgine {
-	class Mesh {
+	class MeshResource {
 	public:
-		Mesh(const std::string& file_path);
+		MeshResource(const std::string& file_path);
 	private:
 		//static Assimp::Importer model_importer;
 	};

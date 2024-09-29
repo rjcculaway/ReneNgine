@@ -1,9 +1,9 @@
-#include "renengine_mesh.hpp"
+#include "renengine_resource_mesh.hpp"
 
 #include <SDL.h>
 
 namespace ReneNgine {
-	Mesh::Mesh(const std::string& file_path) {
+	MeshResource::MeshResource(const std::string& file_path) {
 		//const aiScene* scene = model_importer.ReadFile(file_path, aiProcessPreset_TargetRealtime_Quality);
 
 		//if (!scene) {

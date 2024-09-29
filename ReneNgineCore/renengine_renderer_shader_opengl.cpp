@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 namespace ReneNgine {
+	using namespace Rendering::OpenGLCore;
 	ShaderOpenGL::ShaderOpenGL(const char* vertex_shader_source_path, const char* fragment_shader_source_path) {
 		std::string vertex_shader_source; 
 		std::string fragment_shader_source;

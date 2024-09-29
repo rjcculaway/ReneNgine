@@ -2,10 +2,10 @@
 
 
 namespace ReneNgine {
-	class Texture {
+	class TextureResource {
 	public:
-		Texture(const char* file_path);
-		~Texture();
+		TextureResource(const char* file_path);
+		~TextureResource();
 
 		int GetWidth() const { return width; }
 		int GetHeight() const { return height; }

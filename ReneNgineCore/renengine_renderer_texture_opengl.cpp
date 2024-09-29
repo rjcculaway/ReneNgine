@@ -3,8 +3,9 @@
 #include<SDL.h>
 
 namespace ReneNgine {
+	using namespace Rendering::OpenGLCore;
 	TextureOpenGL::TextureOpenGL(const char* file_path) {
-		Texture texture_resource(file_path);
+		TextureResource texture_resource(file_path);
 
 		glGenTextures(1, &texture_handle);
 		glBindTexture(GL_TEXTURE_2D, texture_handle);

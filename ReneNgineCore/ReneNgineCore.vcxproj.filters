@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\renderer">
+      <UniqueIdentifier>{b4459c5b-1811-469d-b7ee-0782f3e65c9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer">
+      <UniqueIdentifier>{12c60bb9-f604-4b95-abf7-ade2528b28f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -27,26 +33,29 @@
     <ClCompile Include="renengine_engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="renengine_renderer_opengl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="renengine_renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="renengine_renderer_shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="renengine_renderer_shader_opengl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="renengine_mesh.cpp">
+    <ClCompile Include="renengine_resource_mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="renengine_resource_texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="renengine_renderer.cpp">
+      <Filter>Source Files\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renengine_renderer_framebuffer_opengl.cpp">
+      <Filter>Source Files\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renengine_renderer_opengl.cpp">
+      <Filter>Source Files\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renengine_renderer_shader.cpp">
+      <Filter>Source Files\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renengine_renderer_shader_opengl.cpp">
+      <Filter>Source Files\renderer</Filter>
+    </ClCompile>
     <ClCompile Include="renengine_renderer_texture_opengl.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,19 +68,7 @@
     <ClInclude Include="renengine_controls.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="renengine_renderer_opengl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="renengine_renderer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="renengine_renderer_shader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="renengine_renderer_shader_opengl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="renengine_mesh.hpp">
+    <ClInclude Include="renengine_resource_mesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="renengine_vertex.hpp">
@@ -80,8 +77,23 @@
     <ClInclude Include="renengine_resource_texture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="renengine_renderer.hpp">
+      <Filter>Header Files\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renengine_renderer_framebuffer_opengl.hpp">
+      <Filter>Header Files\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renengine_renderer_opengl.hpp">
+      <Filter>Header Files\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renengine_renderer_shader.hpp">
+      <Filter>Header Files\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renengine_renderer_shader_opengl.hpp">
+      <Filter>Header Files\renderer</Filter>
+    </ClInclude>
     <ClInclude Include="renengine_renderer_texture_opengl.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

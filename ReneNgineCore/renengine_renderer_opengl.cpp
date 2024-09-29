@@ -15,6 +15,7 @@
 #include <tiny_obj_loader.h>
 
 namespace ReneNgine {
+	using namespace Rendering::OpenGLCore;
 	RendererOpenGL::RendererOpenGL(SDL_Window* window) {
 		this->window = window;
 		SDL_GetCurrentDisplayMode(0, &this->display_mode);
