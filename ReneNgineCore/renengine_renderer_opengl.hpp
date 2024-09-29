@@ -10,6 +10,7 @@
 
 #include "renengine_renderer.hpp"
 #include "renengine_renderer_shader_opengl.hpp"
+#include "renengine_renderer_framebuffer_opengl.hpp"
 
 constexpr int RENENGINE_OPENGL_MAJOR_VERSION = 4;
 constexpr int RENENGINE_OPENGL_MINOR_VERSION = 6;
@@ -24,7 +25,7 @@ namespace ReneNgine {
 			public:
 				RendererOpenGL(SDL_Window* window);
 				~RendererOpenGL();
-				virtual void Render() override;
+				virtual void Render(uint64_t delta_time_ms) override;
 				virtual void HandleRendererEvents(const SDL_Event& event) override;
 			private:
 				SDL_GLContext context;
@@ -33,10 +34,17 @@ namespace ReneNgine {
 				int window_width;
 				int window_height;
 
+				std::unique_ptr<FramebufferOpenGL> framebuffer;
+
+				GLuint screen_vertex_buffer_object_handle;
+				GLuint screen_vertex_element_array_buffer_object_handle;
+				GLuint screen_vertex_array_object_handle;
+
 				GLuint vertex_buffer_object_handle;
 				GLuint vertex_element_array_buffer_object_handle;
 				GLuint vertex_array_object_handle;
-		
+				
+				std::unique_ptr<ShaderOpenGL> screen_shader_program;
 				std::unique_ptr<ShaderOpenGL> shader_program;
 				std::unique_ptr<TextureOpenGL> texture1;
 				std::unique_ptr<TextureOpenGL> texture2;

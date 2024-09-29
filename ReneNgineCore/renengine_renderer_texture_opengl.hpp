@@ -9,6 +9,7 @@ namespace ReneNgine {
 		namespace OpenGLCore {
 			class TextureOpenGL {
 			public:
+				TextureOpenGL(GLuint width, GLuint height);
 				TextureOpenGL(const char* file_path);
 				~TextureOpenGL();
 

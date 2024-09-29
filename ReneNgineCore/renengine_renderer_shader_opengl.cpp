@@ -116,6 +116,11 @@ namespace ReneNgine {
 		glUniform1i(location, value);
 	}
 
+	void ShaderOpenGL::SetUniformUInt(const std::string& name, unsigned int value) {
+		GLint location = QueryUniformLocation(name);
+		glUniform1ui(location, value);
+	}
+
 	void ShaderOpenGL::SetUniformFloat(const std::string& name, float value) {
 		GLint location = QueryUniformLocation(name);
 		glUniform1fv(location, 1, &value);

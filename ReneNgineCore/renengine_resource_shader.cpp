@@ -1,4 +1,4 @@
-#include "renengine_renderer_shader.hpp"
+#include "renengine_resource_shader.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -6,7 +6,7 @@
 #include <SDL.h>
 
 namespace ReneNgine {
-	bool Shader::LoadShaderText(const char* file_name, std::string& output) {
+	bool ShaderResource::LoadShaderText(const char* file_name, std::string& output) {
 		std::ifstream file_handle;
 
 		file_handle.exceptions(std::ifstream::failbit | std::ifstream::badbit);

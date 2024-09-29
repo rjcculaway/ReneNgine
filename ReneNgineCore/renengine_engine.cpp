@@ -21,7 +21,7 @@ namespace ReneNgine {
 			// Update game state
 
 			// Render
-			renderer.Render();
+			renderer.Render(current_frame_time);
 
 		}
 	}

@@ -144,7 +144,7 @@
     <ClCompile Include="renengine_renderer.cpp" />
     <ClCompile Include="renengine_renderer_framebuffer_opengl.cpp" />
     <ClCompile Include="renengine_renderer_opengl.cpp" />
-    <ClCompile Include="renengine_renderer_shader.cpp" />
+    <ClCompile Include="renengine_resource_shader.cpp" />
     <ClCompile Include="renengine_renderer_shader_opengl.cpp" />
     <ClCompile Include="renengine_resource_texture.cpp" />
     <ClCompile Include="renengine_renderer_texture_opengl.cpp" />
@@ -157,7 +157,7 @@
     <ClInclude Include="renengine_renderer.hpp" />
     <ClInclude Include="renengine_renderer_framebuffer_opengl.hpp" />
     <ClInclude Include="renengine_renderer_opengl.hpp" />
-    <ClInclude Include="renengine_renderer_shader.hpp" />
+    <ClInclude Include="renengine_resource_shader.hpp" />
     <ClInclude Include="renengine_renderer_shader_opengl.hpp" />
     <ClInclude Include="renengine_resource_texture.hpp" />
     <ClInclude Include="renengine_renderer_texture_opengl.hpp" />
@@ -165,6 +165,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.frag" />
+    <None Include="screen_fragment.frag" />
+    <None Include="screen_vertex.vert" />
     <None Include="vertex.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -51,12 +51,17 @@ namespace ReneNgine {
 		// Setup buffers
 		CreateVertexArray();
 
-		glViewport(0, 0, display_mode.w, display_mode.h);
+		framebuffer = std::make_unique<FramebufferOpenGL>(window_width, window_height);
+
+		glViewport(0, 0, window_width, window_width);
 		// Load sample shader
 		// TODO: Load shaders dynamically depending on the model
 		shader_program = std::unique_ptr<ShaderOpenGL>(new ShaderOpenGL("./vertex.vert", "./fragment.frag"));
 		texture1 = std::make_unique<TextureOpenGL>("./assets/rock_face_03_diff_1k.jpg");
 		texture2 = std::make_unique<TextureOpenGL>("./assets/painted_concrete_diff_1k.jpg");
+
+		// Load shader for displaying framebuffers in the screen
+		screen_shader_program = std::unique_ptr<ShaderOpenGL>(new ShaderOpenGL("./screen_vertex.vert", "./screen_fragment.frag"));
 
 	}
 
@@ -83,6 +88,8 @@ namespace ReneNgine {
 		if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
 			SDL_Log("Resized window: %d × %d", event.window.data1, event.window.data2);
 			window_width = event.window.data1;
+			window_height = event.window.data2;
+			framebuffer->ResizeAttachments(window_width, window_height);
 			glViewport(0, 0, window_width, window_height);
 		}
 	}
@@ -140,7 +147,6 @@ namespace ReneNgine {
 
 		glGenVertexArrays(1, &vertex_array_object_handle);							// The VAO will "store" the state changes we made in the following lines
 		glGenBuffers(1, &vertex_buffer_object_handle);								// Create a handle for the vertex buffer object
-		glGenBuffers(1, &vertex_element_array_buffer_object_handle);
 		
 		glBindVertexArray(vertex_array_object_handle);
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_handle);					// Tells OpenGL that the handle is for vertex attributes
@@ -172,8 +178,37 @@ namespace ReneNgine {
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 		
-		glBindBuffer(GL_ARRAY_BUFFER, 0);	// Unbind array buffer
 		glBindVertexArray(0);
+
+		/*
+		* Setup buffers for screen quads
+		*/
+		float screen_vertices[] = {
+			// Position   // Texture Coordinates
+			-1.0f, -1.0f,  0.0f, 0.0f,
+			-1.0f,  1.0f,  0.0f, 1.0f,
+			 1.0f, -1.0f,  1.0f, 0.0f,
+
+			-1.0f,  1.0f,  0.0f, 1.0f,
+			 1.0f,  1.0f,  1.0f, 1.0f,
+			 1.0f, -1.0f,  1.0f, 0.0f,
+		};
+
+
+		glGenVertexArrays(1, &screen_vertex_array_object_handle);							
+		glGenBuffers(1, &screen_vertex_buffer_object_handle);								
+
+		glBindVertexArray(screen_vertex_array_object_handle);
+		glBindBuffer(GL_ARRAY_BUFFER, screen_vertex_buffer_object_handle);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(screen_vertices), screen_vertices, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) nullptr);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(sizeof(float) * 2));
+
+		glEnableVertexAttribArray(0);	// Index 0 pertains to the vertex position, so we enable that index
+		glEnableVertexAttribArray(1);
+
+		glBindVertexArray(0);
+
 	}
 
 	void RendererOpenGL::Cleanup() const {
@@ -181,7 +216,7 @@ namespace ReneNgine {
 		glDeleteBuffers(1, &vertex_buffer_object_handle);
 	}
 
-	void RendererOpenGL::Render() {
+	void RendererOpenGL::Render(uint64_t ticks) {
 		static float c = 1.0;
 		glm::vec3 light_position = glm::normalize(glm::vec3(
 			0.0, 15.0, 15.0
@@ -197,10 +232,11 @@ namespace ReneNgine {
 		//model = glm::scale(model, glm::vec3(0.5 + c));
 		glm::mat4 projection_model_matrix = projection_matrix * model_matrix;
 		glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model_matrix)));
-		//std::cout << scale[0][0] << std::endl;
-		//glClearColor(c, c, c, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// First pass: Render Scene to framebuffer
+		glBindVertexArray(vertex_array_object_handle);
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->GetFramebufferHandle());
+		
 		// Bind the texture and buffer
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1->GetTextureHandle());
@@ -214,10 +250,26 @@ namespace ReneNgine {
 		shader_program->SetUniformMatrix4FV("model_matrix", model_matrix);
 		shader_program->SetUniformMatrix4FV("projection_matrix", projection_matrix);
 		shader_program->SetUniformFloat("c", c);
+		shader_program->SetUniformUInt("time", ticks);
 		shader_program->SetUniformInt("texture_sampler1", 0);
 		shader_program->SetUniformInt("texture_sampler2", 1);
 		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// Second pass: Render the attachments
+		screen_shader_program->Use();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, framebuffer->GetColorAttachment());
+		shader_program->SetUniformInt("screen_texture", 0);
+
+		glBindVertexArray(screen_vertex_array_object_handle);
+		glDisable(GL_DEPTH_TEST);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		SDL_GL_SwapWindow(window);
 	}

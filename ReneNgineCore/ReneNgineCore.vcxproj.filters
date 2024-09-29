@@ -48,14 +48,14 @@
     <ClCompile Include="renengine_renderer_opengl.cpp">
       <Filter>Source Files\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="renengine_renderer_shader.cpp">
-      <Filter>Source Files\renderer</Filter>
-    </ClCompile>
     <ClCompile Include="renengine_renderer_shader_opengl.cpp">
       <Filter>Source Files\renderer</Filter>
     </ClCompile>
     <ClCompile Include="renengine_renderer_texture_opengl.cpp">
       <Filter>Source Files\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renengine_resource_shader.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,14 +86,14 @@
     <ClInclude Include="renengine_renderer_opengl.hpp">
       <Filter>Header Files\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="renengine_renderer_shader.hpp">
-      <Filter>Header Files\renderer</Filter>
-    </ClInclude>
     <ClInclude Include="renengine_renderer_shader_opengl.hpp">
       <Filter>Header Files\renderer</Filter>
     </ClInclude>
     <ClInclude Include="renengine_renderer_texture_opengl.hpp">
       <Filter>Header Files\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renengine_resource_shader.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +101,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="fragment.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="screen_vertex.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="screen_fragment.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

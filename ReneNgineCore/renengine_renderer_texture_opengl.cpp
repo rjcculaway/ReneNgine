@@ -24,6 +24,20 @@ namespace ReneNgine {
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 
+	/**
+	* Constructor for creating a texture for use as a texture attachment for a framebuffer
+	*/
+	TextureOpenGL::TextureOpenGL(GLuint width, GLuint height) {
+		glGenTextures(1, &texture_handle);
+		glBindTexture(GL_TEXTURE_2D, texture_handle);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+
+	}
+
 	TextureOpenGL::~TextureOpenGL() {
 		glDeleteTextures(1, &texture_handle);
 	}

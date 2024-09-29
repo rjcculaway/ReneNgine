@@ -3,7 +3,7 @@
 #include <string>
 
 namespace ReneNgine {
-	class Shader {
+	class ShaderResource {
 	public:
 	protected:
 		bool LoadShaderText(const char * shader_source_path, std::string& output);
