@@ -14,4 +14,8 @@ namespace ReneNgine {
 			child->HandleProcess(delta_time);
 		}
 	}
+	void Node::AddChild(std::unique_ptr<Node>&& new_node) {
+		new_node->SetParent(this);
+		children.emplace_back(std::move(new_node));
+	}
 }

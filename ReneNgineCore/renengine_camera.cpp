@@ -1,4 +1,5 @@
 #include "renengine_camera.hpp"
+#include "renengine_scene.hpp"
 
 #include <iostream>
 
@@ -6,6 +7,9 @@
 #include <glm/ext/matrix_transform.hpp>
 
 namespace ReneNgine {
+	void Camera::MakeActiveCamera() { 
+		scene->SetActiveCamera(this); 
+	}
 	void Camera::Input(const SDL_Event event) {
 		if (event.type == SDL_KEYDOWN) {
 			std::cout << "pressed" << std::endl;
@@ -30,7 +34,8 @@ namespace ReneNgine {
 	}
 
 	void Camera::Process(uint64_t delta_time) {
-		transform.position = glm::vec3(sin(delta_time) * 15.0, cos(delta_time) * 15.0, 0.0);
+		float seconds = static_cast<float>(delta_time) / 1000.0;
+		transform.position = glm::vec3(cos(seconds) * 15.0, sin(seconds) * 15.0, 0.0);
 	}
 
 	glm::mat4 Camera::GetViewMatrix() {

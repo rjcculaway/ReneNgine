@@ -52,8 +52,6 @@ namespace ReneNgine {
 				std::unique_ptr<TextureOpenGL> texture1;
 				std::unique_ptr<TextureOpenGL> texture2;
 
-				Camera active_camera;
-
 				void ConfigureOpenGLContext();
 		
 				void CreateVertexArray();

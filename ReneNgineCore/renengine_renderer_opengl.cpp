@@ -250,7 +250,10 @@ namespace ReneNgine {
 		shader_program->SetUniform3FV("light_position", light_position);
 		shader_program->SetUniformMatrix3FV("normal_matrix", normal_matrix);
 		shader_program->SetUniformMatrix4FV("model_matrix", model_matrix);
-		shader_program->SetUniformMatrix4FV("view_matrix", active_camera.GetViewMatrix());
+		auto active_camera = scene.GetActiveCamera();
+		if (active_camera) {
+			shader_program->SetUniformMatrix4FV("view_matrix", active_camera->GetViewMatrix());
+		}
 		shader_program->SetUniformMatrix4FV("projection_matrix", projection_matrix);
 		shader_program->SetUniformFloat("c", c);
 		shader_program->SetUniformUInt("time", static_cast<unsigned int>(ticks));
