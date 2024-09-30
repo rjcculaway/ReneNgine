@@ -214,9 +214,11 @@ namespace ReneNgine {
 	void RendererOpenGL::Cleanup() const {
 		glDeleteVertexArrays(1, &vertex_array_object_handle);
 		glDeleteBuffers(1, &vertex_buffer_object_handle);
+		glDeleteVertexArrays(1, &screen_vertex_array_object_handle);
+		glDeleteBuffers(1, &screen_vertex_buffer_object_handle);
 	}
 
-	void RendererOpenGL::Render(uint64_t ticks) {
+	void RendererOpenGL::Render(const Scene& scene, uint64_t ticks) {
 		static float c = 1.0;
 		glm::vec3 light_position = glm::normalize(glm::vec3(
 			0.0, 15.0, 15.0
@@ -248,9 +250,10 @@ namespace ReneNgine {
 		shader_program->SetUniform3FV("light_position", light_position);
 		shader_program->SetUniformMatrix3FV("normal_matrix", normal_matrix);
 		shader_program->SetUniformMatrix4FV("model_matrix", model_matrix);
+		shader_program->SetUniformMatrix4FV("view_matrix", active_camera.GetViewMatrix());
 		shader_program->SetUniformMatrix4FV("projection_matrix", projection_matrix);
 		shader_program->SetUniformFloat("c", c);
-		shader_program->SetUniformUInt("time", ticks);
+		shader_program->SetUniformUInt("time", static_cast<unsigned int>(ticks));
 		shader_program->SetUniformInt("texture_sampler1", 0);
 		shader_program->SetUniformInt("texture_sampler2", 1);
 		

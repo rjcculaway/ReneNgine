@@ -137,9 +137,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="renengine_controls.cpp" />
+    <ClCompile Include="renengine_camera.cpp" />
     <ClCompile Include="renengine_display.cpp" />
     <ClCompile Include="renengine_engine.cpp" />
+    <ClCompile Include="renengine_node.cpp" />
     <ClCompile Include="renengine_resource_mesh.cpp" />
     <ClCompile Include="renengine_renderer.cpp" />
     <ClCompile Include="renengine_renderer_framebuffer_opengl.cpp" />
@@ -148,11 +149,14 @@
     <ClCompile Include="renengine_renderer_shader_opengl.cpp" />
     <ClCompile Include="renengine_resource_texture.cpp" />
     <ClCompile Include="renengine_renderer_texture_opengl.cpp" />
+    <ClCompile Include="renengine_scene.cpp" />
+    <ClCompile Include="renengine_transform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="renengine_controls.hpp" />
+    <ClInclude Include="renengine_camera.hpp" />
     <ClInclude Include="renengine_display.hpp" />
     <ClInclude Include="renengine_engine.hpp" />
+    <ClInclude Include="renengine_node.hpp" />
     <ClInclude Include="renengine_resource_mesh.hpp" />
     <ClInclude Include="renengine_renderer.hpp" />
     <ClInclude Include="renengine_renderer_framebuffer_opengl.hpp" />
@@ -161,6 +165,8 @@
     <ClInclude Include="renengine_renderer_shader_opengl.hpp" />
     <ClInclude Include="renengine_resource_texture.hpp" />
     <ClInclude Include="renengine_renderer_texture_opengl.hpp" />
+    <ClInclude Include="renengine_scene.hpp" />
+    <ClInclude Include="renengine_transform.hpp" />
     <ClInclude Include="renengine_vertex.hpp" />
   </ItemGroup>
   <ItemGroup>

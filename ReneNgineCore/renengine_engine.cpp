@@ -11,7 +11,7 @@ namespace ReneNgine {
 
 			SDL_Event event;
 			while (SDL_PollEvent(&event)) {
-				controls.HandleControlEvents(event);
+				scene.HandleInput(event);
 				renderer.HandleRendererEvents(event);
 				if (event.type == SDL_QUIT) {
 					return;
@@ -19,9 +19,10 @@ namespace ReneNgine {
 			}
 
 			// Update game state
+			scene.HandleProcess(delta_time);
 
 			// Render
-			renderer.Render(current_frame_time);
+			renderer.Render(scene, current_frame_time);
 
 		}
 	}

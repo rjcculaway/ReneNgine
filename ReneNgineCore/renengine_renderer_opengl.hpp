@@ -12,6 +12,9 @@
 #include "renengine_renderer_shader_opengl.hpp"
 #include "renengine_renderer_framebuffer_opengl.hpp"
 
+#include "renengine_scene.hpp"
+#include "renengine_camera.hpp"
+
 constexpr int RENENGINE_OPENGL_MAJOR_VERSION = 4;
 constexpr int RENENGINE_OPENGL_MINOR_VERSION = 6;
 
@@ -25,7 +28,7 @@ namespace ReneNgine {
 			public:
 				RendererOpenGL(SDL_Window* window);
 				~RendererOpenGL();
-				virtual void Render(uint64_t delta_time_ms) override;
+				virtual void Render(const Scene& scene, uint64_t delta_time_ms) override;
 				virtual void HandleRendererEvents(const SDL_Event& event) override;
 			private:
 				SDL_GLContext context;
@@ -48,6 +51,8 @@ namespace ReneNgine {
 				std::unique_ptr<ShaderOpenGL> shader_program;
 				std::unique_ptr<TextureOpenGL> texture1;
 				std::unique_ptr<TextureOpenGL> texture2;
+
+				Camera active_camera;
 
 				void ConfigureOpenGLContext();
 		
