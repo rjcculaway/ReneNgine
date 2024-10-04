@@ -28,7 +28,7 @@ namespace ReneNgine {
 			public:
 				RendererOpenGL(SDL_Window* window);
 				~RendererOpenGL();
-				virtual void Render(const Scene& scene, uint64_t delta_time_ms) override;
+				virtual void Render(const Scene& scene, double delta_time) override;
 				virtual void HandleRendererEvents(const SDL_Event& event) override;
 			private:
 				SDL_GLContext context;

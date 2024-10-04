@@ -48,6 +48,7 @@ namespace ReneNgine {
 		glDeleteTextures(1, &color_attachment_handle);
 		glDeleteRenderbuffers(1, &depth_and_stencil_attachment_handle);
 		glDeleteFramebuffers(1, &framebuffer_handle);
+		framebuffer_handle = 0;
 	}
 
 	void FramebufferOpenGL::ResizeAttachments(const unsigned int width, const unsigned int height) {

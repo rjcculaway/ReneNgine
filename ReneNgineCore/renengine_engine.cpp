@@ -2,13 +2,10 @@
 
 namespace ReneNgine {
 	void Engine::StartGameLoop() {
-		uint64_t last_frame_time = SDL_GetTicks64();
+		const uint64_t performance_frequency = SDL_GetPerformanceFrequency();
+		uint64_t last_frame_time = SDL_GetPerformanceCounter();
+		double delta_time = 0.0;
 		while (true) {
-			uint64_t current_frame_time = SDL_GetTicks64();
-			uint64_t delta_time = current_frame_time - last_frame_time;
-
-			float seconds_per_frame = 1.0f / display.GetFPS();
-
 			SDL_Event event;
 			while (SDL_PollEvent(&event)) {
 				scene.HandleInput(event);
@@ -22,8 +19,12 @@ namespace ReneNgine {
 			scene.HandleProcess(delta_time);
 
 			// Render
-			renderer.Render(scene, current_frame_time);
+			renderer.Render(scene, delta_time);
 
+			uint64_t current_frame_time = SDL_GetPerformanceCounter();
+			uint64_t elapsed_time = current_frame_time - last_frame_time;
+			delta_time = elapsed_time / static_cast<double>(performance_frequency);
+			last_frame_time = current_frame_time;
 		}
 	}
 }

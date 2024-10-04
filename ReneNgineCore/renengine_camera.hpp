@@ -5,19 +5,32 @@
 #define GLM_FORCE_LEFT_HANDED
 #include <glm/ext/matrix_transform.hpp>
 
-constexpr glm::vec3 up_vector(0.0, 1.0, 0.0);
 
 namespace ReneNgine {
+    
+    enum CameraDirection {
+        LEFT = 0b100000,
+        RIGHT = 0b010000,
+        UP = 0b001000,
+        DOWN = 0b000100,
+        FRONT = 0b000010,
+        BACK = 0b000001,
+    };
+
     class Camera : public Node
     {
     public:
+        const glm::vec3 UP_VECTOR = glm::vec3(0.0, 1.0, 0.0);
+        const glm::vec3 FRONT_VECTOR = glm::vec3(0.0, 0.0, 1.0);
         Camera(Scene* scene, Node* parent = nullptr) : Node{ scene, parent } {}
         void Input(const SDL_Event event) override;
-        void Process(uint64_t delta_time) override;
+        void Process(const double delta_time) override;
         glm::mat4 GetViewMatrix();
         void MakeActiveCamera();
     private:
         glm::mat4 view_matrix = glm::identity<glm::mat4>();
+        short unsigned int movement = 0b000000; // Left, Right, Up, Down, Back, Front
+        float camera_speed = 20.0f;
     };
 }
 

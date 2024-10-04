@@ -16,6 +16,6 @@ namespace ReneNgine {
 	private:
 		int fps = 60;
 		bool setup();
-		bool cleanup();
+		bool Cleanup();
 	};
 }

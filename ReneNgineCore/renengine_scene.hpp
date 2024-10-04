@@ -11,7 +11,7 @@ namespace ReneNgine {
 	public:
 		Scene();
 		void HandleInput(const SDL_Event event);
-		void HandleProcess(const uint64_t delta_time);
+		void HandleProcess(const double delta_time);
 		Camera * GetActiveCamera() const;
 		void SetActiveCamera(Camera* camera) { active_camera = camera; }
 	private:

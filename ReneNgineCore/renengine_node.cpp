@@ -8,7 +8,7 @@ namespace ReneNgine {
 		}
 	}
 
-	void Node::HandleProcess(const uint64_t delta_time) {
+	void Node::HandleProcess(const double delta_time) {
 		Process(delta_time);
 		for (auto& child : children) {
 			child->HandleProcess(delta_time);

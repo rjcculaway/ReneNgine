@@ -8,7 +8,7 @@ namespace ReneNgine {
 	}
 
 	Display::~Display() {
-		cleanup();
+		Cleanup();
 	}
 
 	bool Display::setup() {
@@ -41,7 +41,7 @@ namespace ReneNgine {
 		return true;
 	}
 
-	bool Display::cleanup() {
+	bool Display::Cleanup() {
 		// Destroy the window and its surface
 		SDL_DestroyWindow(window);
 

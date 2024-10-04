@@ -219,19 +219,21 @@ namespace ReneNgine {
 		glDeleteBuffers(1, &screen_vertex_buffer_object_handle);
 	}
 
-	void RendererOpenGL::Render(const Scene& scene, uint64_t ticks) {
-		static float c = 1.0;
+	void RendererOpenGL::Render(const Scene& scene, double delta_time) {
+		static double c = 25.0;
+		static double time_elapsed = 0.0;
 		glm::vec3 light_position = glm::normalize(glm::vec3(
 			0.0, 15.0, 15.0
 		));
 		glm::mat4 model_matrix = glm::identity<glm::mat4>();
 		glm::mat4 projection_matrix = glm::perspective((float)glm::radians(30.0), (float)window_width / window_height, 0.1f, 150.0f);
 		//glm::mat4 projection = glm::ortho(-100, 100, 100, -100);
-		c += 0.01f;
+		c += 1.0f * delta_time;
+		time_elapsed += delta_time;
 		//c = fmod(c, 1.0);
 		
 		model_matrix = glm::translate(model_matrix, glm::vec3(0.0f, 0.0f, 15.0));
-		model_matrix = glm::rotate(model_matrix, c, glm::vec3(1.0, 1.0, 0.0));
+		model_matrix = glm::rotate(model_matrix, static_cast<float>(c), glm::vec3(1.0, 1.0, 0.0));
 		//model = glm::scale(model, glm::vec3(0.5 + c));
 		glm::mat4 projection_model_matrix = projection_matrix * model_matrix;
 		glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model_matrix)));
@@ -256,8 +258,8 @@ namespace ReneNgine {
 			shader_program->SetUniformMatrix4FV("view_matrix", active_camera->GetViewMatrix());
 		}
 		shader_program->SetUniformMatrix4FV("projection_matrix", projection_matrix);
-		shader_program->SetUniformFloat("c", c);
-		shader_program->SetUniformUInt("time", static_cast<unsigned int>(ticks));
+		shader_program->SetUniformFloat("c", static_cast<float>(c));
+		shader_program->SetUniformFloat("time", static_cast<float>(time_elapsed));
 		shader_program->SetUniformInt("texture_sampler1", 0);
 		shader_program->SetUniformInt("texture_sampler2", 1);
 		

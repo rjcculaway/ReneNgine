@@ -16,10 +16,10 @@ namespace ReneNgine {
 		Transform transform;
 
 		void HandleInput(const SDL_Event event);
-		void HandleProcess(const uint64_t delta_time);
+		void HandleProcess(const double delta_time);
 
 		virtual void Input(const SDL_Event event) { return; }
-		virtual void Process(const uint64_t delta_time) { return; }
+		virtual void Process(const double delta_time = 0) { return; }
 
 		void AddChild(std::unique_ptr<Node>&& new_node);
 		void SetParent(Node* new_parent) { parent = new_parent; }

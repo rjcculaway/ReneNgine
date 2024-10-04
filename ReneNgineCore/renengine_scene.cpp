@@ -18,7 +18,7 @@ namespace ReneNgine {
 		scene_tree->HandleInput(event); 
 	}
 
-	void Scene::HandleProcess(const uint64_t delta_time) {
+	void Scene::HandleProcess(const double delta_time) {
 		scene_tree->HandleProcess(delta_time);
 	}
 	Camera * Scene::GetActiveCamera() const
