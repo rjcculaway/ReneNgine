@@ -12,7 +12,6 @@ namespace ReneNgine {
 	}
 	void Camera::Input(const SDL_Event event) {
 		if (event.type == SDL_KEYDOWN) {
-			std::cout << "pressed" << std::endl;
 			switch (event.key.keysym.sym) {
 			case SDLK_a:
 				transform.position += glm::vec3(-0.1, 0.0, 0.0);
@@ -21,10 +20,10 @@ namespace ReneNgine {
 				transform.position += glm::vec3(0.1, 0.0, 0.0);
 				break;
 			case SDLK_w:
-				transform.position += glm::vec3(0.0, 0.1, 0.0);
+				transform.position += glm::vec3(0.0, 0.0, 0.1);
 				break;
 			case SDLK_s:
-				transform.position += glm::vec3(0.0, -0.1, 0.0);
+				transform.position += glm::vec3(0.0, 0.0, -0.1);
 				break;
 			}
 		}
@@ -35,7 +34,7 @@ namespace ReneNgine {
 
 	void Camera::Process(uint64_t delta_time) {
 		float seconds = static_cast<float>(delta_time) / 1000.0;
-		transform.position = glm::vec3(cos(seconds) * 15.0, sin(seconds) * 15.0, 0.0);
+		//transform.position = glm::vec3(cos(seconds) * 15.0, sin(seconds) * 15.0, 0.0);
 	}
 
 	glm::mat4 Camera::GetViewMatrix() {

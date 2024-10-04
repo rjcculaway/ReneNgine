@@ -10,9 +10,7 @@ namespace ReneNgine {
 	}
 
 	FramebufferOpenGL::~FramebufferOpenGL() {
-		glDeleteTextures(1, &color_attachment_handle);
-		glDeleteTextures(1, &depth_and_stencil_attachment_handle);
-		glDeleteFramebuffers(1, &framebuffer_handle);
+		Cleanup();
 	}
 
 	void FramebufferOpenGL::CreateAttachments(const unsigned int width, const unsigned int height) {
@@ -46,10 +44,15 @@ namespace ReneNgine {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void FramebufferOpenGL::ResizeAttachments(const unsigned int width, const unsigned int height) {
+	void FramebufferOpenGL::Cleanup() {
 		glDeleteTextures(1, &color_attachment_handle);
-		glDeleteTextures(1, &depth_and_stencil_attachment_handle);
+		glDeleteRenderbuffers(1, &depth_and_stencil_attachment_handle);
+		glDeleteFramebuffers(1, &framebuffer_handle);
+	}
 
+	void FramebufferOpenGL::ResizeAttachments(const unsigned int width, const unsigned int height) {
+		Cleanup();
+		glGenFramebuffers(1, &framebuffer_handle);
 		CreateAttachments(width, height);
 	}
 }

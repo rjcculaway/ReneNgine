@@ -90,6 +90,7 @@ namespace ReneNgine {
 			window_width = event.window.data1;
 			window_height = event.window.data2;
 			framebuffer->ResizeAttachments(window_width, window_height);
+			
 			glViewport(0, 0, window_width, window_height);
 		}
 	}

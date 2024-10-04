@@ -6,7 +6,7 @@ namespace ReneNgine {
 	Scene::Scene() {
 		// TODO: Temporary, just to get a camera set up in the scene
 		Camera* camera_ptr = new Camera(this, scene_tree.get());
-		camera_ptr->transform.position.z = 15.0;
+		//camera_ptr->transform.position.z = 15.0;
 		SetActiveCamera(camera_ptr);
 
 		std::unique_ptr<Node> camera(
