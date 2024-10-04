@@ -233,7 +233,7 @@ namespace ReneNgine {
 		//c = fmod(c, 1.0);
 		
 		model_matrix = glm::translate(model_matrix, glm::vec3(0.0f, 0.0f, 15.0));
-		model_matrix = glm::rotate(model_matrix, static_cast<float>(c), glm::vec3(1.0, 1.0, 0.0));
+		// model_matrix = glm::rotate(model_matrix, static_cast<float>(c), glm::vec3(1.0, 1.0, 0.0));
 		//model = glm::scale(model, glm::vec3(0.5 + c));
 		glm::mat4 projection_model_matrix = projection_matrix * model_matrix;
 		glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model_matrix)));

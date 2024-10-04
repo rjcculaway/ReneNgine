@@ -23,7 +23,7 @@ namespace ReneNgine {
         const glm::vec3 UP_VECTOR = glm::vec3(0.0, 1.0, 0.0);
         const glm::vec3 FRONT_VECTOR = glm::vec3(0.0, 0.0, 1.0);
         Camera(Scene* scene, Node* parent = nullptr) : Node{ scene, parent } {
-            transform.rotation = glm::vec3(0.0, glm::one_over_two_pi <float>(), 0.0);
+            transform.rotation = glm::vec3(0.0, glm::half_pi<float>(), 0.0);
         }
         void Input(const SDL_Event event) override;
         void Process(const double delta_time) override;

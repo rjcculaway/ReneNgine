@@ -46,26 +46,30 @@ namespace ReneNgine {
 			int x = 0, y = 0;
 			SDL_GetRelativeMouseState(&x, &y);
 
-			float pitch = transform.rotation.x - glm::radians(static_cast<float> (x) * camera_sensitivity);
-			float yaw = transform.rotation.y - glm::radians(static_cast<float>(y) * camera_sensitivity);
+			float pitch = transform.rotation.x - glm::radians(static_cast<float>(y) * camera_sensitivity);
+			if (pitch >= glm::half_pi<float>()) {
+				pitch = glm::half_pi<float>() - 0.1;
+			}
+			else if (pitch <= -glm::half_pi<float>()) {
+				pitch = -glm::half_pi<float>() + 0.1;
+			}
 			
-			transform.rotation = glm::clamp(
-				glm::vec3(
+			float yaw = transform.rotation.y - glm::radians(static_cast<float>(x) * camera_sensitivity);
+			
+			transform.rotation = glm::vec3(
 					pitch,	// Pitch
 					yaw,	// Yaw
-					transform.rotation.z),
-				-glm::half_pi<float>(), glm::half_pi<float>()
-			);
+					transform.rotation.z);
 		}
 	}
 
 	void Camera::Process(const double delta_time = 0.0) {
 		double camera_speed_in_time = camera_speed * delta_time;
 
-		float sin_yaw = sinf(transform.rotation.x);
-		float sin_pitch = sinf(transform.rotation.y);
-		float cos_yaw = cosf(transform.rotation.x);
-		float cos_pitch = cosf(transform.rotation.y);
+		float sin_yaw = sinf(transform.rotation.y);
+		float sin_pitch = sinf(transform.rotation.x);
+		float cos_yaw = cosf(transform.rotation.y);
+		float cos_pitch = cosf(transform.rotation.x);
 
 		glm::vec3 new_direction = glm::vec3(
 			cos_yaw * cos_pitch,
