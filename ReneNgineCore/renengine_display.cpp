@@ -38,6 +38,10 @@ namespace ReneNgine {
 		if (!surface) {
 			SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Failed to get window surface: %s\n", SDL_GetError());
 		}
+
+		// Capture mouse
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+
 		return true;
 	}
 

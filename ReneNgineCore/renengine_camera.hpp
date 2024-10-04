@@ -22,7 +22,9 @@ namespace ReneNgine {
     public:
         const glm::vec3 UP_VECTOR = glm::vec3(0.0, 1.0, 0.0);
         const glm::vec3 FRONT_VECTOR = glm::vec3(0.0, 0.0, 1.0);
-        Camera(Scene* scene, Node* parent = nullptr) : Node{ scene, parent } {}
+        Camera(Scene* scene, Node* parent = nullptr) : Node{ scene, parent } {
+            transform.rotation = glm::vec3(0.0, glm::one_over_two_pi <float>(), 0.0);
+        }
         void Input(const SDL_Event event) override;
         void Process(const double delta_time) override;
         glm::mat4 GetViewMatrix();
@@ -30,7 +32,13 @@ namespace ReneNgine {
     private:
         glm::mat4 view_matrix = glm::identity<glm::mat4>();
         short unsigned int movement = 0b000000; // Left, Right, Up, Down, Back, Front
+
+        glm::vec3 front = { 0.0, 0.0, 0.0 };
+        
         float camera_speed = 20.0f;
+        float camera_sensitivity = 0.05f;
+
+
     };
 }
 

@@ -42,23 +42,49 @@ namespace ReneNgine {
 				movement = movement & ~CameraDirection::BACK;
 			}
 		}
+		else if (event.type == SDL_MOUSEMOTION) {
+			int x = 0, y = 0;
+			SDL_GetRelativeMouseState(&x, &y);
+
+			float pitch = transform.rotation.x - glm::radians(static_cast<float> (x) * camera_sensitivity);
+			float yaw = transform.rotation.y - glm::radians(static_cast<float>(y) * camera_sensitivity);
+			
+			transform.rotation = glm::clamp(
+				glm::vec3(
+					pitch,	// Pitch
+					yaw,	// Yaw
+					transform.rotation.z),
+				-glm::half_pi<float>(), glm::half_pi<float>()
+			);
+		}
 	}
 
 	void Camera::Process(const double delta_time = 0.0) {
 		double camera_speed_in_time = camera_speed * delta_time;
+
+		float sin_yaw = sinf(transform.rotation.x);
+		float sin_pitch = sinf(transform.rotation.y);
+		float cos_yaw = cosf(transform.rotation.x);
+		float cos_pitch = cosf(transform.rotation.y);
+
+		glm::vec3 new_direction = glm::vec3(
+			cos_yaw * cos_pitch,
+			sin_pitch,
+			sin_yaw * cos_pitch);
+		front = glm::normalize(new_direction);
+
 		if (movement & CameraDirection::FRONT) {
-			transform.position += static_cast<float>(camera_speed_in_time) * FRONT_VECTOR;
+			transform.position += front * static_cast<float>(camera_speed_in_time);
 		}
 		else if (movement & CameraDirection::BACK) {
-			transform.position -= static_cast<float>(camera_speed_in_time) * FRONT_VECTOR;
+			transform.position -= front * static_cast<float>(camera_speed_in_time);
 		}
 		if (movement & CameraDirection::LEFT) {
-			transform.position -= glm::normalize(glm::cross(UP_VECTOR, FRONT_VECTOR)) * static_cast<float>(camera_speed_in_time);
+			transform.position -= glm::normalize(glm::cross(UP_VECTOR, front)) * static_cast<float>(camera_speed_in_time);
 		}
 		else if (movement & CameraDirection::RIGHT) {
-			transform.position += glm::normalize(glm::cross(UP_VECTOR, FRONT_VECTOR)) * static_cast<float>(camera_speed_in_time);
+			transform.position += glm::normalize(glm::cross(UP_VECTOR, front)) * static_cast<float>(camera_speed_in_time);
 		}
-		//transform.position = glm::vec3(cos(delta_time) * 15.0, sin(delta_time) * 15.0, 0.0);
 	}
 
 	glm::mat4 Camera::GetViewMatrix() {
@@ -73,7 +99,8 @@ namespace ReneNgine {
 		glm::vec3 camera_right = glm::normalize(glm::cross(up_vector, camera_direction));
 		glm::vec3 camera_up = glm::cross(camera_direction, camera_right);
 		*/
-		view_matrix = glm::lookAt(transform.position, transform.position + FRONT_VECTOR, UP_VECTOR);
+		//SDL_Log("front: %f, %f, %f", front.x, front.y, front.z);
+		view_matrix = glm::lookAt(transform.position, transform.position + front, UP_VECTOR);
 		return view_matrix;
 	}
 }
