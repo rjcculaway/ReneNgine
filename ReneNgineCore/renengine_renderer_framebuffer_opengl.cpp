@@ -5,15 +5,15 @@
 namespace ReneNgine {
 	using namespace Rendering::OpenGLCore;
 	FramebufferOpenGL::FramebufferOpenGL(unsigned int width, unsigned int height) {
-		glGenFramebuffers(1, &framebuffer_handle);
-		CreateAttachments(width, height);
+		CreateFramebufferAndAttachments(width, height);
 	}
 
 	FramebufferOpenGL::~FramebufferOpenGL() {
 		Cleanup();
 	}
 
-	void FramebufferOpenGL::CreateAttachments(const unsigned int width, const unsigned int height) {
+	void FramebufferOpenGL::CreateFramebufferAndAttachments(const unsigned int width, const unsigned int height) {
+		glGenFramebuffers(1, &framebuffer_handle);
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_handle);
 
 		// Setup color attachment
@@ -52,7 +52,6 @@ namespace ReneNgine {
 
 	void FramebufferOpenGL::ResizeAttachments(const unsigned int width, const unsigned int height) {
 		Cleanup();
-		glGenFramebuffers(1, &framebuffer_handle);
-		CreateAttachments(width, height);
+		CreateFramebufferAndAttachments(width, height);
 	}
 }

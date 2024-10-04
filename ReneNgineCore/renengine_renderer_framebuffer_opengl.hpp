@@ -14,7 +14,7 @@ namespace ReneNgine {
 			public:
 				FramebufferOpenGL(unsigned int width, unsigned int height);
 				~FramebufferOpenGL();
-				void CreateAttachments(const unsigned int width, const unsigned int height);
+				void CreateFramebufferAndAttachments(const unsigned int width, const unsigned int height);
 				void ResizeAttachments(unsigned int width, unsigned int height);
 				void Cleanup();
 				GLuint GetFramebufferHandle() const { return framebuffer_handle; }
