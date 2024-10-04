@@ -46,16 +46,16 @@ namespace ReneNgine {
 
 	void Camera::Process(const double delta_time = 0.0) {
 		double camera_speed_in_time = camera_speed * delta_time;
-		if ((movement & CameraDirection::FRONT) == CameraDirection::FRONT) {
+		if (movement & CameraDirection::FRONT) {
 			transform.position += static_cast<float>(camera_speed_in_time) * FRONT_VECTOR;
 		}
-		else if ((movement & CameraDirection::BACK) == CameraDirection::BACK) {
+		else if (movement & CameraDirection::BACK) {
 			transform.position -= static_cast<float>(camera_speed_in_time) * FRONT_VECTOR;
 		}
-		if ((movement & CameraDirection::LEFT) == CameraDirection::LEFT) {
+		if (movement & CameraDirection::LEFT) {
 			transform.position -= glm::normalize(glm::cross(UP_VECTOR, FRONT_VECTOR)) * static_cast<float>(camera_speed_in_time);
 		}
-		else if ((movement & CameraDirection::RIGHT) == CameraDirection::RIGHT) {
+		else if (movement & CameraDirection::RIGHT) {
 			transform.position += glm::normalize(glm::cross(UP_VECTOR, FRONT_VECTOR)) * static_cast<float>(camera_speed_in_time);
 		}
 		//transform.position = glm::vec3(cos(delta_time) * 15.0, sin(delta_time) * 15.0, 0.0);
