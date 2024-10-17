@@ -233,7 +233,7 @@ namespace ReneNgine {
 		//c = fmod(c, 1.0);
 		
 		model_matrix = glm::translate(model_matrix, glm::vec3(0.0f, 0.0f, 15.0));
-		// model_matrix = glm::rotate(model_matrix, static_cast<float>(c), glm::vec3(1.0, 1.0, 0.0));
+		model_matrix = glm::rotate(model_matrix, static_cast<float>(c), glm::vec3(0.0, 1.0, 0.0));
 		//model = glm::scale(model, glm::vec3(0.5 + c));
 		glm::mat4 projection_model_matrix = projection_matrix * model_matrix;
 		glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model_matrix)));
@@ -249,19 +249,36 @@ namespace ReneNgine {
 		glBindTexture(GL_TEXTURE_2D, texture2->GetTextureHandle());
 		glBindVertexArray(vertex_array_object_handle);
 		
+		auto active_camera = scene.GetActiveCamera();
+
 		shader_program->Use();
+		// Positions
 		shader_program->SetUniform3FV("light_position", light_position);
+		shader_program->SetUniform3FV("light_color", glm::vec3(1.0, 1.0, 0.95));
+		if (active_camera) {
+			shader_program->SetUniform3FV("view_position", active_camera->transform.position);
+		}
+
+		// Matrices
 		shader_program->SetUniformMatrix3FV("normal_matrix", normal_matrix);
 		shader_program->SetUniformMatrix4FV("model_matrix", model_matrix);
-		auto active_camera = scene.GetActiveCamera();
 		if (active_camera) {
 			shader_program->SetUniformMatrix4FV("view_matrix", active_camera->GetViewMatrix());
 		}
 		shader_program->SetUniformMatrix4FV("projection_matrix", projection_matrix);
+		
+		
 		shader_program->SetUniformFloat("c", static_cast<float>(c));
 		shader_program->SetUniformFloat("time", static_cast<float>(time_elapsed));
+		
+		// Texture Samplers
 		shader_program->SetUniformInt("texture_sampler1", 0);
 		shader_program->SetUniformInt("texture_sampler2", 1);
+
+		// Phong Lighting Model Properties
+		shader_program->SetUniformFloat("specular_strength", 1.0);
+		shader_program->SetUniformFloat("shininess", 32.0);
+		shader_program->SetUniform3FV("ambient", glm::vec3(0.2, 0.32, 0.448));
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
