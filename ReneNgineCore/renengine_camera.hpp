@@ -29,6 +29,7 @@ namespace ReneNgine {
         void Process(const double delta_time) override;
         glm::mat4 GetViewMatrix();
         void MakeActiveCamera();
+        bool IsActiveCamera() const;
     private:
         glm::mat4 view_matrix = glm::identity<glm::mat4>();
         short unsigned int movement = 0b000000; // Left, Right, Up, Down, Back, Front

@@ -10,6 +10,9 @@ namespace ReneNgine {
 	void Camera::MakeActiveCamera() { 
 		scene->SetActiveCamera(this); 
 	}
+	bool Camera::IsActiveCamera() const {
+		return scene->GetActiveCamera() == this;
+	}
 	void Camera::Input(const SDL_Event event) {
 		if (event.type == SDL_KEYDOWN) {
 			switch (event.key.keysym.sym) {
