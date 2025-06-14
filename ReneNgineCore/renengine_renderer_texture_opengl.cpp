@@ -4,9 +4,9 @@
 
 namespace ReneNgine {
 	using namespace Rendering::OpenGLCore;
-	TextureOpenGL::TextureOpenGL(const char* file_path) {
-		TextureResource texture_resource(file_path);
+	TextureOpenGL::TextureOpenGL(TextureResource * texture_resource) {
 
+		this->texture_resource= texture_resource;
 		glGenTextures(1, &texture_handle);
 		glBindTexture(GL_TEXTURE_2D, texture_handle);
 
@@ -15,12 +15,13 @@ namespace ReneNgine {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		if (!texture_resource.GetData()) {
+		if (!texture_resource->GetData()) {
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load resource image for texture.\n");
 			return;
 		}
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_resource.GetWidth(), texture_resource.GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, texture_resource.GetData());
+		// TODO: Fix TextureResource destructor being called
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_resource->GetWidth(), texture_resource->GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, texture_resource->GetData());
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 
@@ -39,6 +40,7 @@ namespace ReneNgine {
 	}
 
 	TextureOpenGL::~TextureOpenGL() {
-		glDeleteTextures(1, &texture_handle);
+		// TODO: Fix destructor being called
+		//glDeleteTextures(1, &texture_handle);
 	}
 }

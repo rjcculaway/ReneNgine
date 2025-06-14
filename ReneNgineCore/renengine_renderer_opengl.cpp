@@ -49,6 +49,7 @@ namespace ReneNgine {
 		glDisable(GL_STENCIL_TEST);
 
 		// Setup buffers
+		model = std::make_unique<ModelOpenGL>("./assets/backpack/backpack.obj");
 		CreateVertexArray();
 
 		framebuffer = std::make_unique<FramebufferOpenGL>(window_width, window_height);
@@ -57,8 +58,6 @@ namespace ReneNgine {
 		// Load sample shader
 		// TODO: Load shaders dynamically depending on the model
 		shader_program = std::unique_ptr<ShaderOpenGL>(new ShaderOpenGL("./vertex.vert", "./fragment.frag"));
-		texture1 = std::make_unique<TextureOpenGL>("./assets/rock_face_03_diff_1k.jpg");
-		texture2 = std::make_unique<TextureOpenGL>("./assets/painted_concrete_diff_1k.jpg");
 
 		// Load shader for displaying framebuffers in the screen
 		screen_shader_program = std::unique_ptr<ShaderOpenGL>(new ShaderOpenGL("./screen_vertex.vert", "./screen_fragment.frag"));
@@ -95,7 +94,9 @@ namespace ReneNgine {
 		}
 	}
 
+	
 	void RendererOpenGL::CreateVertexArray() {
+		/**
 		// Load model
 		// TODO: Provide mechanism for loading other models
 
@@ -134,7 +135,7 @@ namespace ReneNgine {
 					attrib.vertices[3 * index.vertex_index + 1],
 					attrib.vertices[3 * index.vertex_index + 2]
 				);
-				vertex.normals = glm::vec3(
+				vertex.normal = glm::vec3(
 					attrib.normals[3 * index.normal_index + 0],
 					attrib.normals[3 * index.normal_index + 1],
 					attrib.normals[3 * index.normal_index + 2]
@@ -165,7 +166,7 @@ namespace ReneNgine {
 			GL_FLOAT,
 			GL_FALSE,
 			sizeof(Vertex),
-			(void *) offsetof(Vertex, normals)
+			(void *) offsetof(Vertex, normal)
 		);
 		glVertexAttribPointer(
 			2,
@@ -180,10 +181,9 @@ namespace ReneNgine {
 		glEnableVertexAttribArray(2);
 		
 		glBindVertexArray(0);
-
-		/*
-		* Setup buffers for screen quads
 		*/
+
+		// Setup buffers for screen quads
 		float screen_vertices[] = {
 			// Position   // Texture Coordinates
 			-1.0f, -1.0f,  0.0f, 0.0f,
@@ -211,10 +211,11 @@ namespace ReneNgine {
 		glBindVertexArray(0);
 
 	}
+	
 
 	void RendererOpenGL::Cleanup() const {
-		glDeleteVertexArrays(1, &vertex_array_object_handle);
-		glDeleteBuffers(1, &vertex_buffer_object_handle);
+		//glDeleteVertexArrays(1, &vertex_array_object_handle);
+		//glDeleteBuffers(1, &vertex_buffer_object_handle);
 		glDeleteVertexArrays(1, &screen_vertex_array_object_handle);
 		glDeleteBuffers(1, &screen_vertex_buffer_object_handle);
 	}
@@ -237,20 +238,19 @@ namespace ReneNgine {
 		//model = glm::scale(model, glm::vec3(0.5 + c));
 		glm::mat4 projection_model_matrix = projection_matrix * model_matrix;
 		glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model_matrix)));
-
+		
+		auto active_camera = scene.GetActiveCamera();
 		// First pass: Render Scene to framebuffer
-		glBindVertexArray(vertex_array_object_handle);
+		//glBindVertexArray(vertex_array_object_handle);
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->GetFramebufferHandle());
 		
 		// Bind the texture and buffer
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1->GetTextureHandle());
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture2->GetTextureHandle());
-		glBindVertexArray(vertex_array_object_handle);
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, texture1->GetTextureHandle());
+		//glActiveTexture(GL_TEXTURE1);
+		//glBindTexture(GL_TEXTURE_2D, texture2->GetTextureHandle());
+		//glBindVertexArray(vertex_array_object_handle);
 		
-		auto active_camera = scene.GetActiveCamera();
-
 		shader_program->Use();
 		// Positions
 		shader_program->SetUniform3FV("light_position", light_position);
@@ -283,6 +283,7 @@ namespace ReneNgine {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+		model->Draw(*shader_program);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
