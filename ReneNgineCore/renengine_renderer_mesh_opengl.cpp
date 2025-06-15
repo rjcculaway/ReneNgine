@@ -1,11 +1,12 @@
+#include "renengine_renderer_opengl.hpp"
 #include "renengine_renderer_mesh_opengl.hpp"
 
 namespace ReneNgine {
 	using namespace Rendering::OpenGLCore;
-	MeshOpenGL::MeshOpenGL(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<TextureOpenGL> textures) {
+	MeshOpenGL::MeshOpenGL(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<TextureOpenGL>&& textures) {
 		this->vertices = vertices;
 		this->indices = indices;
-		this->textures = textures;
+		this->textures = std::move(textures);
 
 		SetupMesh();
 	}

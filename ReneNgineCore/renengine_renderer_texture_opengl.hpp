@@ -12,6 +12,14 @@ namespace ReneNgine {
 			public:
 				TextureOpenGL(GLuint width, GLuint height);
 				TextureOpenGL(TextureResource * texture_resource);
+
+				// TextureOpenGL cannot be copied
+				TextureOpenGL& operator=(const TextureOpenGL& other) = delete;
+				TextureOpenGL(const TextureOpenGL& other) = delete;
+
+				TextureOpenGL(TextureOpenGL&& other) noexcept; // Move constructor
+				TextureOpenGL& operator=(TextureOpenGL&& other) noexcept;
+
 				~TextureOpenGL();
 				
 				TextureResource * GetTextureResource() const { return texture_resource; }

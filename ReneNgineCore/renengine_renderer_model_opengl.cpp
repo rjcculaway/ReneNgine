@@ -85,12 +85,12 @@ namespace ReneNgine {
 				if (mesh->mMaterialIndex >= 0) {
 					aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 					std::vector<TextureOpenGL> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-					textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+					textures.insert(textures.end(), std::make_move_iterator(diffuseMaps.begin()), std::make_move_iterator(diffuseMaps.end()));
 
 					std::vector<TextureOpenGL> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-					textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+					textures.insert(textures.end(), std::make_move_iterator(specularMaps.begin()), std::make_move_iterator(specularMaps.end()));
 				}
-				return MeshOpenGL(vertices, indices, textures);
+				return MeshOpenGL(vertices, indices, std::move(textures));
 			}
 			std::vector<TextureOpenGL> ModelOpenGL::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string type_name) {
 				std::vector<TextureOpenGL> textures;
@@ -110,8 +110,6 @@ namespace ReneNgine {
 
 					if (!skip) {
 						size_t current = Resources::textures.size();
-
-						//TextureOpenGL texture(Resources::AddTextureResource("./assets/painted_concrete_diff_1k.jpg"));
 						textures.emplace_back(Resources::AddTextureResource(str.C_Str()));
 					}
 				}

@@ -300,5 +300,4 @@ namespace ReneNgine {
 
 		SDL_GL_SwapWindow(window);
 	}
-
 }
