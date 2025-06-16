@@ -17,8 +17,9 @@ namespace ReneNgine {
 				TextureOpenGL& operator=(const TextureOpenGL& other) = delete;
 				TextureOpenGL(const TextureOpenGL& other) = delete;
 
-				TextureOpenGL(TextureOpenGL&& other) noexcept; // Move constructor
+				// Move
 				TextureOpenGL& operator=(TextureOpenGL&& other) noexcept;
+				TextureOpenGL(TextureOpenGL&& other) noexcept;
 
 				~TextureOpenGL();
 				

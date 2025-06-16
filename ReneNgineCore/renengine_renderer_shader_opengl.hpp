@@ -17,6 +17,9 @@ namespace ReneNgine {
 			class ShaderOpenGL : virtual public ShaderResource {
 			public:
 				ShaderOpenGL(const char* vertex_shader_source_path, const char* fragment_shader_source_path);
+				ShaderOpenGL(const ShaderOpenGL&) = delete;
+				ShaderOpenGL(ShaderOpenGL&&) = delete;
+				ShaderOpenGL& operator=(const ShaderOpenGL&) = delete;
 				~ShaderOpenGL();
 				void Use() const;
 				void SetUniform3FV(const std::string& name, glm::vec3 value);

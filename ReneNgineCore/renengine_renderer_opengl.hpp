@@ -30,6 +30,13 @@ namespace ReneNgine {
 			public:
 				RendererOpenGL(SDL_Window* window);
 				~RendererOpenGL();
+
+				RendererOpenGL(const RendererOpenGL&) = delete;
+				RendererOpenGL& operator=(const RendererOpenGL&) = delete;
+
+				RendererOpenGL(RendererOpenGL&& other) = delete;
+				RendererOpenGL& operator=(RendererOpenGL&& other) = delete;
+
 				virtual void Render(const Scene& scene, double delta_time) override;
 				virtual void HandleRendererEvents(const SDL_Event& event) override;
 			private:

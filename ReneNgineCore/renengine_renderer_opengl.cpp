@@ -276,7 +276,6 @@ namespace ReneNgine {
 		shader_program->SetUniformInt("texture_sampler2", 1);
 
 		// Phong Lighting Model Properties
-		shader_program->SetUniformFloat("specular_strength", 1.0);
 		shader_program->SetUniformFloat("shininess", 32.0);
 		shader_program->SetUniform3FV("ambient", glm::vec3(0.2, 0.32, 0.448));
 		

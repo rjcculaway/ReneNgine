@@ -10,6 +10,10 @@ namespace ReneNgine {
 		SDL_DisplayMode display_mode;
 
 		Display();
+		Display(const Display&) = delete;
+		Display& operator=(const Display&) = delete;
+		Display(Display&&) = delete;
+		Display& operator=(Display&&) = delete;
 		~Display();
 
 		int GetFPS() const { return fps; }

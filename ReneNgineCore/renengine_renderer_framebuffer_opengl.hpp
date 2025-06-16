@@ -13,6 +13,10 @@ namespace ReneNgine {
 			{
 			public:
 				FramebufferOpenGL(unsigned int width, unsigned int height);
+				FramebufferOpenGL(const FramebufferOpenGL&) = delete;
+				FramebufferOpenGL& operator=(const FramebufferOpenGL&) = delete;
+				FramebufferOpenGL(FramebufferOpenGL&&) = delete;
+				FramebufferOpenGL& operator=(FramebufferOpenGL&&) = delete;
 				~FramebufferOpenGL();
 				void CreateFramebufferAndAttachments(const unsigned int width, const unsigned int height);
 				void ResizeAttachments(unsigned int width, unsigned int height);

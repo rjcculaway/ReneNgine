@@ -14,7 +14,6 @@ uniform vec3 light_color;
 uniform sampler2D texture_sampler1;
 uniform sampler2D texture_sampler2;
 
-uniform float specular_strength;
 uniform float shininess;
 uniform vec3 ambient;
 
@@ -31,9 +30,9 @@ void main () {
 	vec3 reflection_direction = reflect(-light_direction, normal_normalized); // The light direction is negated since reflect expects that the vector goes from the light to the fragment position, not the other way around
 
 	float specular_factor = pow(max(dot(view_direction, reflection_direction), 0.0), shininess);
-	vec3 specular = specular_strength * specular_factor * light_color;
+	vec3 specular = texture2D(texture_sampler2, uv).rgb * specular_factor * light_color;
 
-	vec3 color = mix(texture(texture_sampler1, uv), texture(texture_sampler2, uv), triangle_wave(time, 3.0)).rgb;
+	vec3 color = texture2D(texture_sampler1, uv).rgb;
 	float diffuse_factor = max(dot(normal_normalized, light_direction), 0.0);
 	vec3 lambertian = diffuse_factor * light_color;
 

@@ -43,6 +43,7 @@ namespace ReneNgine {
 	TextureOpenGL::TextureOpenGL(TextureOpenGL&& other) noexcept {
 		this->texture_handle = other.texture_handle;
 		this->texture_resource = other.texture_resource;
+		this->type = other.type;
 
 		other.texture_resource = nullptr;
 		other.texture_handle = 0;
@@ -65,7 +66,9 @@ namespace ReneNgine {
 
 
 	TextureOpenGL::~TextureOpenGL() {
-		// TODO: Fix destructor being called
+		if (texture_handle == 0) {
+			return;
+		}
 		glDeleteTextures(1, &texture_handle);
 	}
 }
