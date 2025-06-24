@@ -96,93 +96,6 @@ namespace ReneNgine {
 
 	
 	void RendererOpenGL::CreateVertexArray() {
-		/**
-		// Load model
-		// TODO: Provide mechanism for loading other models
-
-		std::string model_file_name = "./assets/cube.obj";
-		tinyobj::ObjReaderConfig reader_config;
-		reader_config.mtl_search_path = "./";
-		reader_config.triangulate = false;
-
-		tinyobj::ObjReader reader;
-		if (!reader.ParseFromFile(model_file_name, reader_config)) {
-			if (!reader.Error().empty()) {
-				SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load .obj file.\n");
-			}
-		}
-
-		if (!reader.Warning().empty()) {
-			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "TinyObjReader: %s\n", reader.Warning().c_str());
-		}
-
-		auto& attrib = reader.GetAttrib();
-		auto& materials = reader.GetMaterials();
-		auto& shapes = reader.GetShapes();
-		
-		size_t num_indices = 0;
-		for (auto& shape : shapes) {
-			num_indices += shape.mesh.indices.size();
-		}
-
-		std::vector<Vertex> vertices(num_indices);
-		size_t vertices_idx = 0;
-		for (const auto& shape : shapes) {
-			for (const auto& index : shape.mesh.indices) {
-				Vertex& vertex = vertices[vertices_idx++];
-				vertex.position = glm::vec3(
-					attrib.vertices[3 * index.vertex_index + 0],
-					attrib.vertices[3 * index.vertex_index + 1],
-					attrib.vertices[3 * index.vertex_index + 2]
-				);
-				vertex.normal = glm::vec3(
-					attrib.normals[3 * index.normal_index + 0],
-					attrib.normals[3 * index.normal_index + 1],
-					attrib.normals[3 * index.normal_index + 2]
-				);
-				vertex.texture_coordinates = glm::vec2(
-					attrib.texcoords[2 * index.texcoord_index + 0],
-					attrib.texcoords[2 * index.texcoord_index + 1]
-				);
-			}
-		}
-
-		glGenVertexArrays(1, &vertex_array_object_handle);							// The VAO will "store" the state changes we made in the following lines
-		glGenBuffers(1, &vertex_buffer_object_handle);								// Create a handle for the vertex buffer object
-		
-		glBindVertexArray(vertex_array_object_handle);
-		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_handle);					// Tells OpenGL that the handle is for vertex attributes
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);	// Actually load the data. GL_STATIC_DRAW signals intent that the buffer will be populated ONCE, and drawn multiple times
-		glVertexAttribPointer(
-			0,			// Starting index
-			3,			// How many elements does one vertex have
-			GL_FLOAT,	// Data type
-			GL_FALSE,
-			sizeof(Vertex),
-			(void*) nullptr);
-		glVertexAttribPointer(
-			1,
-			3,
-			GL_FLOAT,
-			GL_FALSE,
-			sizeof(Vertex),
-			(void *) offsetof(Vertex, normal)
-		);
-		glVertexAttribPointer(
-			2,
-			2,
-			GL_FLOAT,
-			GL_FALSE,
-			sizeof(Vertex),
-			(void*) offsetof(Vertex, texture_coordinates) 
-		);
-		glEnableVertexAttribArray(0);	// Index 0 pertains to the vertex position, so we enable that index
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		
-		glBindVertexArray(0);
-		*/
-
 		// Setup buffers for screen quads
 		float screen_vertices[] = {
 			// Position   // Texture Coordinates
@@ -241,15 +154,8 @@ namespace ReneNgine {
 		
 		auto active_camera = scene.GetActiveCamera();
 		// First pass: Render Scene to framebuffer
-		//glBindVertexArray(vertex_array_object_handle);
+
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->GetFramebufferHandle());
-		
-		// Bind the texture and buffer
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, texture1->GetTextureHandle());
-		//glActiveTexture(GL_TEXTURE1);
-		//glBindTexture(GL_TEXTURE_2D, texture2->GetTextureHandle());
-		//glBindVertexArray(vertex_array_object_handle);
 		
 		shader_program->Use();
 		// Positions
@@ -296,6 +202,8 @@ namespace ReneNgine {
 		glDisable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glBindVertexArray(0);
 
 		SDL_GL_SwapWindow(window);
 	}
